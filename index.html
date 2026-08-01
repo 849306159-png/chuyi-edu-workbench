@@ -1,0 +1,2164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>楚怡教育工作台</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; background: #f0f2f5; color: #333; }
+.app-container { display: flex; height: 100vh; overflow: hidden; }
+
+/* Sidebar */
+.sidebar { width: 220px; background: linear-gradient(180deg, #1a3a5c 0%, #0f2640 100%); color: #fff; display: flex; flex-direction: column; flex-shrink: 0; user-select: none; }
+.sidebar-header { padding: 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.sidebar-header .logo { font-size: 18px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.sidebar-header .logo .icon { width: 36px; height: 36px; background: #ff7b42; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.sidebar-header .subtitle { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.nav-list { list-style: none; padding: 8px 0; flex: 1; overflow-y: auto; }
+.nav-item { padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 14px; transition: all 0.2s; border-left: 3px solid transparent; color: rgba(255,255,255,0.7); }
+.nav-item:hover { background: rgba(255,255,255,0.08); color: #fff; }
+.nav-item.active { background: rgba(255,255,255,0.12); color: #fff; border-left-color: #ff7b42; font-weight: 600; }
+.nav-item .nav-icon { font-size: 18px; width: 24px; text-align: center; }
+.nav-divider { margin: 8px 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+.sidebar-footer { padding: 12px 16px; border-top: 1px solid rgba(255,255,255,0.1); font-size: 12px; color: rgba(255,255,255,0.4); }
+.sidebar-footer .user-info { display: flex; align-items: center; gap: 8px; }
+.sidebar-footer .avatar { width: 32px; height: 32px; background: #ff7b42; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; color: #fff; }
+
+/* Main */
+.main-content { flex: 1; overflow-y: auto; background: #f0f2f5; }
+.main-header { background: #fff; padding: 14px 28px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e8e8e8; }
+.main-header .page-title { font-size: 20px; font-weight: 600; }
+.main-header .header-actions { display: flex; align-items: center; gap: 12px; }
+.main-header .notification-btn { width: 36px; height: 36px; border-radius: 8px; border: 1px solid #e8e8e8; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative; font-size: 16px; }
+.main-header .notification-btn .badge { position: absolute; top: -4px; right: -4px; background: #ff4757; color: #fff; font-size: 10px; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.page-content { padding: 24px 28px; }
+
+/* Cards */
+.card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); margin-bottom: 16px; }
+.card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.card-title .title-dot { width: 4px; height: 20px; background: #ff7b42; border-radius: 2px; }
+
+/* Stats */
+.stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+.stat-card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; align-items: center; gap: 16px; transition: transform 0.2s; }
+.stat-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+.stat-icon.blue { background: #e6f0ff; color: #4a90d9; }
+.stat-icon.orange { background: #fff0e6; color: #ff7b42; }
+.stat-icon.green { background: #e6fff0; color: #27ae60; }
+.stat-icon.purple { background: #f0e6ff; color: #8e44ad; }
+.stat-info .stat-value { font-size: 28px; font-weight: 700; }
+.stat-info .stat-label { font-size: 13px; color: #888; margin-top: 2px; }
+
+/* Buttons */
+.btn { padding: 8px 16px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px; font-weight: 500; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+.btn-primary { background: #ff7b42; color: #fff; }
+.btn-primary:hover { background: #e86a35; }
+.btn-outline { background: #fff; color: #ff7b42; border: 1px solid #ff7b42; }
+.btn-outline:hover { background: #fff5f0; }
+.btn-secondary { background: #f0f2f5; color: #555; }
+.btn-secondary:hover { background: #e4e6eb; }
+.btn-sm { padding: 5px 12px; font-size: 12px; border-radius: 6px; }
+.btn-danger { background: #ff4757; color: #fff; }
+.btn-danger:hover { background: #e83a48; }
+.btn-success { background: #27ae60; color: #fff; }
+.btn-success:hover { background: #219a52; }
+
+/* Table */
+.table-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table th { background: #fafbfc; padding: 12px 14px; text-align: left; font-weight: 600; color: #666; border-bottom: 1px solid #e8e8e8; white-space: nowrap; }
+table td { padding: 12px 14px; border-bottom: 1px solid #f0f0f0; }
+table tr:hover { background: #fafbfc; }
+table .tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 500; }
+.tag-blue { background: #e6f0ff; color: #4a90d9; }
+.tag-orange { background: #fff0e6; color: #ff7b42; }
+.tag-green { background: #e6fff0; color: #27ae60; }
+.tag-red { background: #ffe6e6; color: #ff4757; }
+.tag-gray { background: #f0f0f0; color: #888; }
+
+/* Toolbar */
+.toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.search-input { padding: 8px 14px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; width: 240px; outline: none; transition: border-color 0.2s; }
+.search-input:focus { border-color: #ff7b42; }
+.filter-tabs { display: flex; gap: 4px; }
+.filter-tab { padding: 6px 14px; border-radius: 6px; border: none; cursor: pointer; font-size: 13px; background: #f0f2f5; color: #666; transition: all 0.2s; }
+.filter-tab.active { background: #ff7b42; color: #fff; }
+
+/* Modal */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+.modal { background: #fff; border-radius: 14px; padding: 0; width: 640px; max-width: 90vw; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.15); }
+.modal-header { padding: 18px 24px; border-bottom: 1px solid #f0f0f0; display: flex; align-items: center; justify-content: space-between; }
+.modal-header h3 { font-size: 17px; font-weight: 600; }
+.modal-close { width: 32px; height: 32px; border-radius: 8px; border: none; background: #f0f2f5; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.modal-body { padding: 24px; }
+.modal-footer { padding: 16px 24px; border-top: 1px solid #f0f0f0; display: flex; justify-content: flex-end; gap: 10px; }
+
+/* Form */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 13px; font-weight: 500; color: #555; margin-bottom: 6px; }
+.form-label .required { color: #ff4757; margin-left: 2px; }
+.form-input, .form-select { width: 100%; padding: 9px 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 13px; outline: none; transition: border-color 0.2s; }
+.form-input:focus, .form-select:focus { border-color: #ff7b42; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+/* Alert */
+.alert { padding: 12px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px; }
+.alert-warning { background: #fff8e6; color: #b8860b; border: 1px solid #ffe8a0; }
+.alert-info { background: #e6f0ff; color: #4a90d9; border: 1px solid #b8d4f0; }
+.alert-success { background: #e6fff0; color: #27ae60; border: 1px solid #b8e6cc; }
+.alert-danger { background: #ffe6e6; color: #ff4757; border: 1px solid #ffb8b8; }
+
+/* Report */
+.report-preview { border: 1px solid #e8e8e8; border-radius: 12px; padding: 30px; background: #fff; }
+.report-title { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 24px; }
+.report-section { margin-bottom: 20px; }
+.report-section h4 { font-size: 15px; font-weight: 600; margin-bottom: 10px; color: #1a3a5c; padding-bottom: 6px; border-bottom: 2px solid #ff7b42; display: inline-block; }
+
+/* Schedule */
+.schedule-container { overflow-x: auto; }
+.schedule-table { min-width: 900px; border-collapse: collapse; font-size: 12px; }
+.schedule-table th { background: #1a3a5c; color: #fff; padding: 10px 8px; text-align: center; font-weight: 600; border: 1px solid #2a4a6c; }
+.schedule-table td { padding: 8px; border: 1px solid #e8e8e8; text-align: center; vertical-align: middle; min-width: 110px; }
+.schedule-table .time-col { background: #f5f7fa; font-weight: 600; color: #555; min-width: 140px; white-space: nowrap; }
+.schedule-table .meal-row { background: #fff8e6; font-weight: 600; color: #b8860b; text-align: center; }
+.schedule-table .class-cell { background: #e6f0ff; color: #1a3a5c; font-weight: 500; cursor: pointer; border-radius: 4px; padding: 6px; }
+.schedule-table .class-cell:hover { background: #d0e4ff; }
+.schedule-table .class-cell .teacher-name { font-size: 11px; color: #888; margin-top: 2px; }
+.schedule-table .empty-cell { color: #ccc; font-size: 11px; }
+
+/* Quick links */
+.quick-links { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+.quick-link-card { background: #fff; border-radius: 10px; padding: 18px; display: flex; align-items: center; gap: 12px; cursor: pointer; transition: all 0.2s; border: 1px solid transparent; }
+.quick-link-card:hover { border-color: #ff7b42; box-shadow: 0 2px 8px rgba(255,123,66,0.1); }
+.quick-link-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+.quick-link-info .ql-title { font-size: 14px; font-weight: 600; }
+.quick-link-info .ql-desc { font-size: 11px; color: #999; margin-top: 2px; }
+
+/* Activity */
+.activity-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid #f5f5f5; }
+.activity-dot { width: 8px; height: 8px; border-radius: 50%; background: #ff7b42; margin-top: 5px; flex-shrink: 0; }
+.activity-content .act-text { font-size: 13px; }
+.activity-content .act-time { font-size: 11px; color: #999; margin-top: 2px; }
+
+/* Toast */
+.toast { position: fixed; top: 20px; right: 20px; background: #333; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 14px; z-index: 9999; animation: slideIn 0.3s; }
+.toast.success { background: #27ae60; }
+.toast.error { background: #ff4757; }
+@keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+.hidden { display: none !important; }
+.empty-state { text-align: center; padding: 60px 20px; }
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+.empty-state p { color: #999; font-size: 14px; }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+
+.dropdown-menu { position: absolute; top: 100%; right: 0; background: #fff; border: 1px solid #e8e8e8; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); min-width: 160px; z-index: 100; padding: 4px 0; }
+.dropdown-menu .dropdown-item { padding: 8px 16px; font-size: 13px; cursor: pointer; display: block; width: 100%; text-align: left; border: none; background: none; }
+.dropdown-menu .dropdown-item:hover { background: #f5f7fa; }
+.dropdown-wrap { position: relative; display: inline-block; }
+
+@media (max-width: 1200px) { .stats-grid { grid-template-columns: repeat(3, 1fr); } .quick-links { grid-template-columns: repeat(2, 1fr); } .grid-2 { grid-template-columns: 1fr; } }
+@media (max-width: 768px) { .sidebar { width: 60px; } .sidebar .nav-item span:not(.nav-icon), .sidebar-header .subtitle, .sidebar-header .logo span, .sidebar-footer .user-info span { display: none; } }
+</style>
+</head>
+<body>
+<div class="app-container">
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo"><span class="icon">📚</span><span>楚怡教育</span></div>
+      <div class="subtitle">单招培训管理系统</div>
+    </div>
+    <ul class="nav-list" id="navList">
+      <li class="nav-item active" data-page="dashboard"><span class="nav-icon">🏠</span><span>工作台首页</span></li>
+      <li class="nav-divider"></li>
+      <li class="nav-item" data-page="students"><span class="nav-icon">👨‍🎓</span><span>学生管理</span></li>
+      <li class="nav-item" data-page="classes"><span class="nav-icon">🏫</span><span>班级管理</span></li>
+      <li class="nav-item" data-page="analysis"><span class="nav-icon">📊</span><span>学情分析</span></li>
+      <li class="nav-item" data-page="renewal"><span class="nav-icon">💰</span><span>续费管理</span></li>
+      <li class="nav-item" data-page="fees"><span class="nav-icon">🧾</span><span>收费管理</span></li>
+      <li class="nav-item" data-page="schedule"><span class="nav-icon">📅</span><span>教学管理</span></li>
+      <li class="nav-item" data-page="enrollment"><span class="nav-icon">📋</span><span>招生管理</span></li>
+      <li class="nav-item" data-page="dormitory"><span class="nav-icon">🏠</span><span>宿舍管理</span></li>
+      <li class="nav-item" data-page="marketing"><span class="nav-icon">📈</span><span>营销管理</span></li>
+      <li class="nav-item" data-page="salary"><span class="nav-icon">👨‍🏫</span><span>教师管理</span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <div class="user-info"><span class="avatar">管</span><span>管理员 | 楚怡教育</span></div>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    <header class="main-header" id="mainHeader">
+      <div class="page-title" id="pageTitle">工作台首页</div>
+      <div class="header-actions">
+        <span class="sync-badge offline" id="syncStatus">⚪ 未连接</span>
+        <span class="online-users" id="onlineUsers" title="在线用户">👥 0人在线</span>
+        <button class="notification-btn" title="通知">🔔<span class="badge" id="notifBadge">3</span></button>
+        <span style="font-size:13px;color:#888;" id="dateDisplay">加载中...</span>
+      </div>
+    </header>
+    <div class="page-content" id="pageContent"></div>
+  </main>
+</div>
+
+<div class="modal-overlay hidden" id="modalOverlay">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<!-- Socket.IO 客户端（CDN，同时支持本地和云端部署） -->
+<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+<style>
+  .sync-badge { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:12px; font-size:12px; font-weight:500; transition:all .3s; }
+  .sync-badge.online { background:#e6fff0; color:#27ae60; }
+  .sync-badge.offline { background:#f5f5f5; color:#999; }
+  .online-users { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:12px; background:#f0f7ff; color:#1a73e8; font-size:12px; cursor:default; }
+  .sync-toast { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#1a3a5c; color:#fff; padding:8px 20px; border-radius:8px; font-size:13px; z-index:10000; box-shadow:0 4px 12px rgba(0,0,0,.15); animation:slideUp .3s ease; }
+  @keyframes slideUp { from{opacity:0;transform:translate(-50%,20px);} to{opacity:1;transform:translate(-50%,0);} }
+  .user-setup-modal { position:fixed; top:0;left:0;right:0;bottom:0; background:rgba(0,0,0,.5); z-index:9999; display:flex; align-items:center; justify-content:center; }
+  .user-setup-box { background:#fff; border-radius:12px; padding:28px 32px; max-width:380px; box-shadow:0 8px 32px rgba(0,0,0,.2); }
+  .user-setup-box h3 { margin:0 0 8px; font-size:18px; }
+  .user-setup-box p { margin:0 0 16px; font-size:13px; color:#666; }
+  .user-setup-box input { width:100%; padding:10px 14px; border:2px solid #e0e0e0; border-radius:8px; font-size:14px; margin-bottom:12px; }
+  .user-setup-box input:focus { border-color:#1a73e8; outline:none; }
+  .user-setup-box button { width:100%; padding:10px; background:#1a3a5c; color:#fff; border:none; border-radius:8px; font-size:14px; cursor:pointer; }
+  .user-setup-box button:hover { background:#0f2640; }
+</style>
+
+<script>
+// ==================== DATA ====================
+const now = new Date();
+const fmtDate = (d) => { const m=d.getMonth()+1; const day=d.getDate(); return `${d.getFullYear()}-${m<10?'0'+m:m}-${day<10?'0'+day:day}`; };
+function parseDate(s){ if(!s) return new Date(); const p=s.split('-'); return new Date(+p[0],+p[1]-1,+p[2]); }
+// 学考成绩不再用等级折算，直接使用数值
+
+const mockData = {
+  students: [
+    { id:'S001',name:'张明辉',gender:'男',phone:'13800138001',idCard:'410102200503010011',native:'河南省郑州市',gradStatus:'应届',targetSchool:'郑州职业技术学院',targetMajor:'计算机应用',teacher:'李老师',class:'冲刺一班',enrollDate:'2026-03-01',status:'在读',examScores:{chinese:85,math:85,english:75},shouldPay:9500,paidFee:9500,commission:800 },
+    { id:'S002',name:'李晓芳',gender:'女',phone:'13800138002',idCard:'410103200508120022',native:'河南省洛阳市',gradStatus:'往届',targetSchool:'河南职业技术学院',targetMajor:'会计',teacher:'王老师',class:'冲刺一班',enrollDate:'2026-03-01',status:'在读',shouldPay:9500,paidFee:9500,commission:800 },
+    { id:'S003',name:'王浩然',gender:'男',phone:'13800138003',idCard:'410104200510200033',native:'河南省开封市',gradStatus:'中职',targetSchool:'郑州铁路职院',targetMajor:'铁道交通',teacher:'李老师',class:'冲刺二班',enrollDate:'2026-03-05',status:'在读',shouldPay:8500,paidFee:8500,commission:600 },
+    { id:'S004',name:'赵雪梅',gender:'女',phone:'13800138004',idCard:'410105200504150044',native:'河南省新乡市',gradStatus:'往届',targetSchool:'河南经贸职业学院',targetMajor:'电子商务',teacher:'王老师',class:'冲刺二班',enrollDate:'2026-03-05',status:'在读',shouldPay:9500,paidFee:5000,commission:800 },
+    { id:'S005',name:'刘子轩',gender:'男',phone:'13800138005',idCard:'410106200511080055',native:'河南省安阳市',gradStatus:'应届',targetSchool:'郑州信息科技职院',targetMajor:'软件技术',teacher:'李老师',class:'冲刺一班',enrollDate:'2026-04-01',status:'在读',examScores:{chinese:75,math:85,english:95},shouldPay:9500,paidFee:0,commission:0 },
+    { id:'S006',name:'陈雨欣',gender:'女',phone:'13800138006',idCard:'410107200506220066',native:'河南省商丘市',gradStatus:'应届',targetSchool:'郑州职业技术学院',targetMajor:'学前教育',teacher:'张老师',class:'基础班',enrollDate:'2026-02-15',status:'在读',examScores:{chinese:95,math:85,english:85},shouldPay:7500,paidFee:7500,commission:500 },
+    { id:'S007',name:'杨鹏飞',gender:'男',phone:'13800138007',idCard:'410108200509180077',native:'河南省周口市',gradStatus:'中职',targetSchool:'河南应用技术学院',targetMajor:'机电一体化',teacher:'张老师',class:'基础班',enrollDate:'2026-02-15',status:'在读',shouldPay:7500,paidFee:7500,commission:500 },
+    { id:'S008',name:'周思涵',gender:'女',phone:'13800138008',idCard:'410109200512050088',native:'河南省驻马店市',gradStatus:'应届',targetSchool:'河南工业贸易职院',targetMajor:'物流管理',teacher:'李老师',class:'冲刺二班',enrollDate:'2026-03-10',status:'休学',examScores:{chinese:85,math:75,english:85},shouldPay:9500,paidFee:5000,commission:400 },
+    { id:'S009',name:'吴志远',gender:'男',phone:'13800138009',idCard:'410110200507140099',native:'河南省信阳市',gradStatus:'中职',targetSchool:'郑州电力高专',targetMajor:'电气自动化',teacher:'王老师',class:'冲刺一班',enrollDate:'2026-03-01',status:'在读',shouldPay:8500,paidFee:8500,commission:600 },
+    { id:'S010',name:'郑小雅',gender:'女',phone:'13800138010',idCard:'410111200510300100',native:'河南省濮阳市',gradStatus:'往届',targetSchool:'河南交通职院',targetMajor:'道路桥梁',teacher:'张老师',class:'冲刺一班',enrollDate:'2026-03-15',status:'在读',shouldPay:8500,paidFee:0,commission:0 }
+  ],
+  classes: [
+    { id:'C001',name:'冲刺一班',headTeacher:'李明辉',capacity:50,current:35,room:'201教室',startDate:'2026-03-01' },
+    { id:'C002',name:'冲刺二班',headTeacher:'张秀兰',capacity:45,current:30,room:'202教室',startDate:'2026-03-01' },
+    { id:'C003',name:'基础班',headTeacher:'王刚',capacity:40,current:28,room:'203教室',startDate:'2026-02-15' },
+    { id:'C004',name:'强化班',headTeacher:'刘红',capacity:35,current:22,room:'204教室',startDate:'2026-04-01' }
+  ],
+  scores: [
+    { studentId:'S001',name:'张明辉',class:'冲刺一班',week:1,professional:88 },
+    { studentId:'S001',name:'张明辉',class:'冲刺一班',week:2,professional:92 },
+    { studentId:'S002',name:'李晓芳',class:'冲刺一班',week:1,chinese:92,math:85,english:88,professional:90 },
+    { studentId:'S002',name:'李晓芳',class:'冲刺一班',week:2,chinese:90,math:82,english:85,professional:88 },
+    { studentId:'S003',name:'王浩然',class:'冲刺二班',week:1,chinese:78,math:90,english:65,professional:75 },
+    { studentId:'S004',name:'赵雪梅',class:'冲刺二班',week:1,chinese:88,math:70,english:82,professional:85 },
+    { studentId:'S005',name:'刘子轩',class:'冲刺一班',week:1,professional:70 },
+    { studentId:'S005',name:'刘子轩',class:'冲刺一班',week:2,professional:78 }
+  ],
+  schedule: [
+    { id:'SC001',className:'冲刺一班',day:0,period:0,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC002',className:'冲刺一班',day:1,period:0,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC003',className:'冲刺一班',day:2,period:0,subject:'电子电工',teacher:'吴杰'},
+    { id:'SC004',className:'冲刺一班',day:3,period:0,subject:'电子电工',teacher:'吴杰'},
+    { id:'SC005',className:'冲刺一班',day:4,period:0,subject:'语文',teacher:'陈老师'},
+    { id:'SC006',className:'冲刺一班',day:0,period:1,subject:'英语',teacher:'张老师'},
+    { id:'SC007',className:'冲刺一班',day:1,period:1,subject:'英语',teacher:'张老师'},
+    { id:'SC008',className:'冲刺一班',day:2,period:1,subject:'英语',teacher:'张老师'},
+    { id:'SC009',className:'冲刺一班',day:3,period:1,subject:'英语',teacher:'张老师'},
+    { id:'SC010',className:'冲刺一班',day:4,period:1,subject:'逻辑推理',teacher:'王老师'},
+    { id:'SC011',className:'冲刺一班',day:0,period:2,subject:'英语',teacher:'张老师'},
+    { id:'SC012',className:'冲刺一班',day:1,period:2,subject:'英语',teacher:'张老师'},
+    { id:'SC013',className:'冲刺一班',day:2,period:2,subject:'体育',teacher:'班主任'},
+    { id:'SC014',className:'冲刺一班',day:3,period:2,subject:'语文',teacher:'陈老师'},
+    { id:'SC015',className:'冲刺一班',day:4,period:2,subject:'体育',teacher:'班主任'},
+    { id:'SC016',className:'冲刺一班',day:0,period:3,subject:'科学常识',teacher:'吴杰'},
+    { id:'SC017',className:'冲刺一班',day:1,period:3,subject:'科学常识',teacher:'吴杰'},
+    { id:'SC018',className:'冲刺一班',day:2,period:3,subject:'语文',teacher:'陈老师'},
+    { id:'SC019',className:'冲刺一班',day:3,period:3,subject:'语文',teacher:'陈老师'},
+    { id:'SC020',className:'冲刺一班',day:4,period:3,subject:'语文',teacher:'陈老师'},
+    { id:'SC021',className:'冲刺一班',day:0,period:4,subject:'人文常识',teacher:'刘老师'},
+    { id:'SC022',className:'冲刺一班',day:1,period:4,subject:'人文常识',teacher:'刘老师'},
+    { id:'SC023',className:'冲刺一班',day:2,period:4,subject:'人文常识',teacher:'刘老师'},
+    { id:'SC024',className:'冲刺一班',day:3,period:4,subject:'人文常识',teacher:'刘老师'},
+    { id:'SC025',className:'冲刺一班',day:4,period:4,subject:'人文常识',teacher:'刘老师'},
+    { id:'SC026',className:'冲刺一班',day:0,period:5,subject:'时政',teacher:'陈佳斌'},
+    { id:'SC027',className:'冲刺一班',day:1,period:5,subject:'时政',teacher:'陈佳斌'},
+    { id:'SC028',className:'冲刺一班',day:2,period:5,subject:'德育',teacher:'秦老师'},
+    { id:'SC029',className:'冲刺一班',day:3,period:5,subject:'德育',teacher:'秦老师'},
+    { id:'SC030',className:'冲刺一班',day:4,period:5,subject:'德育',teacher:'秦老师'},
+    { id:'SC031',className:'冲刺一班',day:0,period:6,subject:'数学',teacher:'谭老师'},
+    { id:'SC032',className:'冲刺一班',day:1,period:6,subject:'数学',teacher:'谭老师'},
+    { id:'SC033',className:'冲刺一班',day:2,period:6,subject:'数学',teacher:'谭老师'},
+    { id:'SC034',className:'冲刺一班',day:3,period:6,subject:'数学',teacher:'谭老师'},
+    { id:'SC035',className:'冲刺一班',day:4,period:6,subject:'数学',teacher:'谭老师'},
+    { id:'SC036',className:'冲刺一班',day:0,period:7,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC037',className:'冲刺一班',day:1,period:7,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC038',className:'冲刺一班',day:2,period:7,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC039',className:'冲刺一班',day:3,period:7,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC040',className:'冲刺一班',day:4,period:7,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC041',className:'冲刺一班',day:0,period:8,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC042',className:'冲刺一班',day:1,period:8,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC043',className:'冲刺一班',day:2,period:8,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC044',className:'冲刺一班',day:3,period:8,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC045',className:'冲刺一班',day:4,period:8,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC046',className:'冲刺一班',day:0,period:9,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC047',className:'冲刺一班',day:1,period:9,subject:'大扫除',teacher:'班主任'},
+    { id:'SC048',className:'冲刺一班',day:2,period:9,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC049',className:'冲刺一班',day:3,period:9,subject:'职测刷题',teacher:'班主任'},
+    { id:'SC050',className:'冲刺一班',day:4,period:9,subject:'大扫除',teacher:'班主任'}
+  ],
+  fees: [
+    { id:'F001',studentId:'S001',name:'张明辉',class:'冲刺一班',type:'食宿费',amount:1500,period:'2026-08',dueDate:'2026-08-01',paidDate:'2026-07-25',status:'已缴',collector:'张会计' },
+    { id:'F002',studentId:'S002',name:'李晓芳',class:'冲刺一班',type:'食宿费',amount:1500,period:'2026-08',dueDate:'2026-08-01',paidDate:null,status:'待缴',collector:null },
+    { id:'F003',studentId:'S003',name:'王浩然',class:'冲刺二班',type:'食宿费',amount:1500,period:'2026-08',dueDate:'2026-08-01',paidDate:null,status:'待缴',collector:null },
+    { id:'F004',studentId:'S004',name:'赵雪梅',class:'冲刺二班',type:'食宿费',amount:1500,period:'2026-08',dueDate:'2026-08-01',paidDate:'2026-07-28',status:'已缴',collector:'张会计' },
+    { id:'F005',studentId:'S005',name:'刘子轩',class:'冲刺一班',type:'食宿费',amount:1500,period:'2026-08',dueDate:'2026-08-01',paidDate:null,status:'逾期',collector:null },
+    { id:'F006',studentId:'S006',name:'陈雨欣',class:'基础班',type:'食宿费',amount:1200,period:'2026-08',dueDate:'2026-08-01',paidDate:null,status:'待缴',collector:null }
+  ],
+  charges: [
+    { id:'CH001',studentId:'S001',name:'张明辉',teacher:'李老师',item:'学费',amount:8000,date:'2026-03-01',status:'已缴',collector:'张会计' },
+    { id:'CH002',studentId:'S001',name:'张明辉',teacher:'李老师',item:'学杂费',amount:500,date:'2026-03-01',status:'已缴',collector:'张会计' },
+    { id:'CH003',studentId:'S002',name:'李晓芳',teacher:'王老师',item:'学费',amount:8000,date:'2026-03-01',status:'已缴',collector:'李会计' },
+    { id:'CH004',studentId:'S003',name:'王浩然',teacher:'李老师',item:'学费',amount:8000,date:'2026-03-05',status:'已缴',collector:'李会计' },
+    { id:'CH005',studentId:'S004',name:'赵雪梅',teacher:'王老师',item:'学费',amount:8000,date:'2026-03-05',status:'已缴',collector:'李会计' },
+    { id:'CH006',studentId:'S005',name:'刘子轩',teacher:'李老师',item:'学费',amount:8000,date:'2026-04-01',status:'待缴',collector:null },
+    { id:'CH007',studentId:'S006',name:'陈雨欣',teacher:'张老师',item:'学费',amount:6000,date:'2026-02-15',status:'已缴',collector:'王会计' },
+    { id:'CH008',studentId:'S007',name:'杨鹏飞',teacher:'张老师',item:'学费',amount:6000,date:'2026-02-15',status:'已缴',collector:'王会计' },
+    { id:'CH009',studentId:'S001',name:'张明辉',teacher:'李老师',item:'押金',amount:1000,date:'2026-03-01',status:'已缴',collector:'张会计' }
+  ],
+  teacherSalary: [
+    { id:'T001',name:'吴杰',subject:'科学常识',ratePerClass:120},
+    { id:'T002',name:'张老师',subject:'英语',ratePerClass:100},
+    { id:'T003',name:'刘老师',subject:'人文常识',ratePerClass:100},
+    { id:'T004',name:'陈佳斌',subject:'时政',ratePerClass:100},
+    { id:'T005',name:'秦老师',subject:'德育',ratePerClass:100},
+    { id:'T006',name:'谭老师',subject:'数学',ratePerClass:100},
+    { id:'T007',name:'陈老师',subject:'语文',ratePerClass:100},
+    { id:'T008',name:'王老师',subject:'逻辑推理',ratePerClass:100},
+    { id:'T009',name:'班主任',subject:'职测刷题',ratePerClass:80}
+  ],
+  enrollmentTeachers: [
+    { id:'E001',name:'李老师',phone:'13800001001',region:'郑州片区',targetSchools:['郑州职业技术学院','郑州信息科技职院'],studentCount:4,note:'负责郑州及周边地区招生'},
+    { id:'E002',name:'王老师',phone:'13800001002',region:'洛阳片区',targetSchools:['河南职业技术学院'],studentCount:3,note:'负责洛阳及豫西地区招生'},
+    { id:'E003',name:'张老师',phone:'13800001003',region:'商丘片区',targetSchools:['河南工业贸易职院'],studentCount:2,note:'负责商丘及豫东地区招生'}
+  ],
+  dormitories: [
+    { id:'D001',building:'1号楼',room:'101',type:'男生宿舍',beds:6,students:[
+      {studentId:'S001',name:'张明辉',class:'冲刺一班'},{studentId:'S003',name:'王浩然',class:'冲刺二班'}
+    ]},
+    { id:'D002',building:'1号楼',room:'102',type:'男生宿舍',beds:6,students:[
+      {studentId:'S005',name:'刘子轩',class:'冲刺一班'},{studentId:'S007',name:'杨鹏飞',class:'强化班'},{studentId:'S010',name:'马天宇',class:'基础班'}
+    ]},
+    { id:'D003',building:'2号楼',room:'201',type:'女生宿舍',beds:6,students:[
+      {studentId:'S002',name:'李晓芳',class:'冲刺一班'},{studentId:'S004',name:'赵雪梅',class:'冲刺二班'},{studentId:'S006',name:'陈雨欣',class:'基础班'}
+    ]},
+    { id:'D004',building:'2号楼',room:'202',type:'女生宿舍',beds:6,students:[
+      {studentId:'S008',name:'周思涵',class:'冲刺二班'},{studentId:'S009',name:'吴佳琪',class:'基础班'}
+    ]}
+  ],
+  marketing: [
+    { id:'M001',name:'孙晓峰',gender:'男',phone:'13800002001',native:'河南省南阳市',gradStatus:'应届',targetSchool:'河南工业贸易职院',targetMajor:'计算机应用',teacher:'李老师',trialStart:'2026-07-25',trialDays:7,dormitory:{building:'1号楼',room:'103',bed:'1号床'},batch:'一期',status:'试听中',note:'家长意向较强，关注就业方向'},
+    { id:'M002',name:'周美玲',gender:'女',phone:'13800002002',native:'河南省许昌市',gradStatus:'往届',targetSchool:'河南经贸职业学院',targetMajor:'电子商务',teacher:'王老师',trialStart:'2026-07-28',trialDays:3,dormitory:{building:'2号楼',room:'203',bed:'2号床'},batch:'一期',status:'试听中',note:'对电商专业兴趣浓厚'},
+    { id:'M003',name:'马小军',gender:'男',phone:'13800002003',native:'河南省焦作市',gradStatus:'中职',targetSchool:'郑州铁路职院',targetMajor:'铁道交通',teacher:'张老师',trialStart:'2026-07-20',trialDays:10,dormitory:{building:'1号楼',room:'103',bed:'2号床'},batch:'二期',status:'已转化',note:'已报名冲刺二班'},
+    { id:'M004',name:'林佳慧',gender:'女',phone:'13800002004',native:'河南省平顶山市',gradStatus:'应届',targetSchool:'郑州职业技术学院',targetMajor:'学前教育',teacher:'李老师',trialStart:'2026-07-30',trialDays:1,dormitory:null,batch:'二期',status:'试听中',note:''}
+  ]
+};
+
+// ==================== 实时同步引擎 ====================
+let _applyingRemote = false;
+let _socket = null;
+let _syncDebounceTimer = null;
+let _userName = localStorage.getItem('chuyi_userName') || '';
+let _backendUrl = '';
+
+function getBackendUrl() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('server')) return params.get('server');
+  const saved = localStorage.getItem('chuyi_backendUrl');
+  if (saved) return saved;
+  return ''; // 同源模式
+}
+
+function syncState() {
+  if (_applyingRemote) return;
+  if (!_socket || !_socket.connected) return;
+  if (_syncDebounceTimer) clearTimeout(_syncDebounceTimer);
+  _syncDebounceTimer = setTimeout(() => {
+    fetch((_backendUrl || '') + '/api/sync', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(mockData)
+    }).catch(() => {});
+  }, 300);
+}
+
+function initSync() {
+  _backendUrl = getBackendUrl();
+  if (typeof io === 'undefined') {
+    console.log('Socket.IO 未加载，应用以独立模式运行');
+    updateSyncStatus(false);
+    return;
+  }
+  try {
+    _socket = io(_backendUrl || undefined, { reconnection: true, reconnectionDelay: 2000 });
+  } catch(e) {
+    updateSyncStatus(false);
+    return;
+  }
+
+  _socket.on('connect', () => {
+    updateSyncStatus(true);
+    if (!_userName) {
+      showUserNameSetup();
+    } else {
+      _socket.emit('set-name', _userName);
+    }
+  });
+
+  _socket.on('disconnect', () => {
+    updateSyncStatus(false);
+  });
+
+  _socket.on('state', (newState) => {
+    if (!newState) {
+      // 服务器无数据，发送本地数据初始化
+      syncState();
+      return;
+    }
+    _applyingRemote = true;
+    Object.keys(mockData).forEach(k => delete mockData[k]);
+    Object.assign(mockData, newState);
+    if (typeof currentPage !== 'undefined' && renders[currentPage]) {
+      pageContent.innerHTML = renders[currentPage]();
+      if (currentPage === 'schedule') setTimeout(renderScheduleTable, 50);
+    }
+    if (document.getElementById('notifBadge')) {
+      document.getElementById('notifBadge').textContent =
+        mockData.fees.filter(f=>f.status==='逾期').length +
+        mockData.charges.filter(c=>c.status==='待缴').length;
+    }
+    _applyingRemote = false;
+  });
+
+  _socket.on('presence', (users) => {
+    const el = document.getElementById('onlineUsers');
+    if (el) {
+      el.textContent = `👥 ${users.length}人在线`;
+      el.title = users.map(u => u.name).join('、');
+    }
+  });
+
+  _socket.on('lock-edit', (info) => {
+    const labels = {students:'学生',classes:'班级',fees:'续费',charges:'收费',schedule:'课表',teacherSalary:'教师',marketing:'营销',dormitories:'宿舍'};
+    showSyncToast(`${labels[info.entity]||info.entity}记录正在被 ${info.by} 编辑`);
+  });
+
+  _socket.on('lock-failed', (info) => {
+    alert(`该记录正在被 ${info.lockedBy} 编辑，请稍后再试`);
+  });
+
+  _socket.on('reset', () => {
+    alert('数据已被管理员重置，页面将重新加载');
+    location.reload();
+  });
+}
+
+function updateSyncStatus(online) {
+  const el = document.getElementById('syncStatus');
+  if (!el) return;
+  if (online) {
+    el.className = 'sync-badge online';
+    el.textContent = '🟢 已同步';
+  } else {
+    el.className = 'sync-badge offline';
+    el.textContent = '⚪ 未连接';
+  }
+}
+
+function showSyncToast(msg) {
+  const t = document.createElement('div');
+  t.className = 'sync-toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => { t.style.opacity = '0'; t.style.transition = 'opacity .3s'; }, 2000);
+  setTimeout(() => t.remove(), 2500);
+}
+
+function showUserNameSetup() {
+  const div = document.createElement('div');
+  div.className = 'user-setup-modal';
+  div.innerHTML = `
+    <div class="user-setup-box">
+      <h3>👋 欢迎使用楚怡教育工作台</h3>
+      <p>请输入您的姓名，用于多人协同标识。其他用户将看到您正在编辑的内容。</p>
+      <input id="userNameInput" placeholder="请输入姓名" value="${_userName}" autofocus>
+      <button onclick="(function(){var n=document.getElementById('userNameInput').value.trim()||'匿名用户';_userName=n;localStorage.setItem('chuyi_userName',n);_socket.emit('set-name',n);document.querySelector('.user-setup-modal').remove();})()">确认进入</button>
+    </div>`;
+  document.body.appendChild(div);
+  document.getElementById('userNameInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') {
+      var n = this.value.trim() || '匿名用户';
+      _userName = n;
+      localStorage.setItem('chuyi_userName', n);
+      _socket.emit('set-name', n);
+      div.remove();
+    }
+  });
+}
+
+function lockForEdit(entity, id) {
+  if (_socket?.connected) _socket.emit('lock-edit', { entity, id });
+}
+function unlockAfterEdit(entity, id) {
+  if (_socket?.connected) _socket.emit('unlock-edit', { entity, id });
+}
+
+function getTeacherScheduleCount(teacherName) {
+  return mockData.schedule.filter(s=>s.teacher===teacherName).length;
+}
+function getTeacherMonthly(teacherName) {
+  const t = mockData.teacherSalary.find(x=>x.name===teacherName);
+  if(!t) return 0;
+  const cnt = getTeacherScheduleCount(teacherName);
+  return cnt * t.ratePerClass * 4;
+}
+function isYingjie(sid) { return mockData.students.find(s=>s.id===sid)?.gradStatus==='应届'; }
+// ---- 宿舍↔学生 双向联动核心函数 ----
+function getStudentDorm(sid){
+  const d = mockData.dormitories.find(r=>r.students.some(s=>s.studentId===sid));
+  return d ? `${d.building} ${d.room}` : '';
+}
+function getStudentDormId(sid){
+  const d = mockData.dormitories.find(r=>r.students.some(s=>s.studentId===sid));
+  return d ? d.id : '';
+}
+// 将学生分配到指定宿舍（dormId为空则移出）
+function assignStudentToDorm(sid,dormId){
+  const stu = mockData.students.find(s=>s.id===sid);
+  if(!stu) return;
+  // 先从所有宿舍中移除该学生
+  mockData.dormitories.forEach(d=>{ d.students = d.students.filter(s=>s.studentId!==sid); });
+  // 再分配到目标宿舍
+  if(dormId){
+    const d = mockData.dormitories.find(x=>x.id===dormId);
+    if(d && d.students.length<d.beds){
+      d.students.push({studentId:stu.id,name:stu.name,class:stu.class});
+    }
+  }
+}
+// 从所有宿舍中移除学生
+function removeStudentFromAllDorms(sid){
+  mockData.dormitories.forEach(d=>{ d.students = d.students.filter(s=>s.studentId!==sid); });
+}
+// 将营销试听学生的宿舍信息同步到宿舍管理模块
+function syncMarketingDorms(){
+  // 先清除所有试读学生标记的记录
+  mockData.dormitories.forEach(d=>{
+    d.students = d.students.filter(s=>!s.isTrial);
+  });
+  // 遍历营销记录，将试听学生的宿舍信息同步到宿舍模块
+  mockData.marketing.forEach(m=>{
+    if(m.dormitory && m.dormitory.building && m.dormitory.room && m.status==='试听中'){
+      // 查找匹配的宿舍房间
+      let dorm = mockData.dormitories.find(d=>d.building===m.dormitory.building && d.room===m.dormitory.room);
+      if(!dorm){
+        // 房间不存在则自动创建
+        const isMale = m.gender==='男';
+        dorm = {
+          id:'D'+String(mockData.dormitories.length+1).padStart(3,'0'),
+          building:m.dormitory.building,
+          room:m.dormitory.room,
+          type:isMale?'男生宿舍':'女生宿舍',
+          beds:6,
+          students:[]
+        };
+        mockData.dormitories.push(dorm);
+      }
+      // 添加试读学生到房间（避免重复）
+      if(!dorm.students.find(s=>s.studentId===m.id)){
+        dorm.students.push({studentId:m.id,name:m.name,class:'试听',isTrial:true,trialStatus:m.status});
+      }
+    }
+  });
+}
+// 检查学生是否为试读学生
+function isTrialStudent(sid){
+  return mockData.marketing.some(m=>m.id===sid);
+}
+function getScoreVal(v) { return typeof v==='string' ? (+v||0) : (v||0); }
+function totalScore(s) {
+  const stu = mockData.students.find(x=>x.id===s.studentId);
+  if(stu && stu.gradStatus==='应届' && stu.examScores) {
+    const examTotal = getScoreVal(stu.examScores.chinese) + getScoreVal(stu.examScores.math) + getScoreVal(stu.examScores.english);
+    return examTotal + getScoreVal(s.professional);
+  }
+  return getScoreVal(s.chinese)+getScoreVal(s.math)+getScoreVal(s.english)+getScoreVal(s.professional);
+}
+
+// ==================== RENDERERS ====================
+const pageTitle = document.getElementById('pageTitle');
+const pageContent = document.getElementById('pageContent');
+const overlay = document.getElementById('modalOverlay');
+const modalBox = document.getElementById('modalBox');
+let currentPage = 'dashboard';
+let editingStudent = null;
+
+const renders = {
+  dashboard() {
+    const activeStudents = mockData.students.filter(s=>s.status==='在读').length;
+    const overdueCount = mockData.fees.filter(f=>f.status==='逾期').length;
+    const totalRevenue = mockData.charges.filter(c=>c.status==='已缴').reduce((s,c)=>s+c.amount,0);
+    const pendingPay = mockData.charges.filter(c=>c.status==='待缴').length;
+    const dueSoon = mockData.fees.filter(f=>{
+      const diff = Math.ceil((parseDate(f.dueDate)-now)/(1000*60*60*24));
+      return diff>=0&&diff<=7&&f.status==='待缴';
+    });
+    const classCount = mockData.classes.length;
+    const maleStudents = mockData.students.filter(s=>s.gender==='男'&&s.status==='在读').length;
+    const femaleStudents = activeStudents - maleStudents;
+    return `
+      <div style="background:linear-gradient(135deg, #ff7b42 0%, #ff9a6c 50%, #ffb088 100%);border-radius:14px;padding:24px 28px;margin-bottom:20px;color:#fff;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+        <div>
+          <div style="font-size:22px;font-weight:700;margin-bottom:4px;">👋 欢迎回来，管理员</div>
+          <div style="font-size:13px;opacity:0.85;">${fmtDate(now)} | 楚怡教育 · 单招培训管理系统</div>
+        </div>
+        <div style="display:flex;gap:20px;flex-wrap:wrap;">
+          <div style="text-align:center;"><div style="font-size:26px;font-weight:700;">${activeStudents}</div><div style="font-size:12px;opacity:0.8;">在读学生</div></div>
+          <div style="text-align:center;"><div style="font-size:26px;font-weight:700;">${classCount}</div><div style="font-size:12px;opacity:0.8;">运营班级</div></div>
+          <div style="text-align:center;"><div style="font-size:26px;font-weight:700;">¥${(totalRevenue/10000).toFixed(1)}万</div><div style="font-size:12px;opacity:0.8;">累计收费</div></div>
+        </div>
+      </div>
+      <div class="stats-grid" style="grid-template-columns:repeat(5, 1fr);">
+        <div class="stat-card"><div class="stat-icon blue">👨‍🎓</div><div class="stat-info"><div class="stat-value">${activeStudents}</div><div class="stat-label">在读学生</div></div></div>
+        <div class="stat-card"><div class="stat-icon orange">🏫</div><div class="stat-info"><div class="stat-value">${classCount}</div><div class="stat-label">运营班级</div></div></div>
+        <div class="stat-card"><div class="stat-icon green">💰</div><div class="stat-info"><div class="stat-value" style="font-size:22px;">¥${(totalRevenue/10000).toFixed(1)}万</div><div class="stat-label">累计收费</div></div></div>
+        <div class="stat-card"><div class="stat-icon purple">⚠️</div><div class="stat-info"><div class="stat-value" style="color:${overdueCount>0?'#ff4757':'#27ae60'}">${overdueCount}</div><div class="stat-label">续费逾期</div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#fff0e6;color:#ff7b42;">📋</div><div class="stat-info"><div class="stat-value">${pendingPay}</div><div class="stat-label">待缴费项目</div></div></div>
+      </div>
+      ${dueSoon.length>0?`<div class="alert alert-warning"><span>⚠️</span> 有 <b>${dueSoon.length}</b> 名学生食宿费将在7天内到期，请及时处理！<span style="margin-left:auto;cursor:pointer;text-decoration:underline;" onclick="navigateTo('renewal')">前往续费管理 →</span></div>`:''}
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="title-dot"></span>快捷入口</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            <div class="quick-link-card" onclick="navigateTo('students')"><div class="quick-link-icon stat-icon blue">👨‍🎓</div><div class="quick-link-info"><div class="ql-title">学生管理</div><div class="ql-desc">管理学生档案信息</div></div></div>
+            <div class="quick-link-card" onclick="navigateTo('analysis')"><div class="quick-link-icon stat-icon orange">📊</div><div class="quick-link-info"><div class="ql-title">学情分析</div><div class="ql-desc">录入成绩与生成报告</div></div></div>
+            <div class="quick-link-card" onclick="navigateTo('renewal')"><div class="quick-link-icon stat-icon green">💰</div><div class="quick-link-info"><div class="ql-title">续费管理</div><div class="ql-desc">食宿费续费提醒</div></div></div>
+            <div class="quick-link-card" onclick="navigateTo('schedule')"><div class="quick-link-icon stat-icon purple">📅</div><div class="quick-link-info"><div class="ql-title">教学管理</div><div class="ql-desc">课表查看与排课</div></div></div>
+            <div class="quick-link-card" onclick="navigateTo('enrollment')"><div class="quick-link-icon" style="background:#fff0e6;color:#ff7b42;width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">📋</div><div class="quick-link-info"><div class="ql-title">招生管理</div><div class="ql-desc">招生老师与统计</div></div></div>
+            <div class="quick-link-card" onclick="navigateTo('dormitory')"><div class="quick-link-icon" style="background:#e6fff0;color:#27ae60;width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">🏠</div><div class="quick-link-info"><div class="ql-title">宿舍管理</div><div class="ql-desc">宿舍分配与调换</div></div></div>
+            <div class="quick-link-card" onclick="navigateTo('marketing')"><div class="quick-link-icon" style="background:#f0e6ff;color:#8e44ad;width:42px;height:42px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">📈</div><div class="quick-link-info"><div class="ql-title">营销管理</div><div class="ql-desc">试听体验与转化</div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="title-dot"></span>待办事项</div></div>
+          ${(mockData.fees.filter(f=>f.status==='逾期'||f.status==='待缴').length===0 && mockData.charges.filter(c=>c.status==='待缴').length===0)?'<div style="text-align:center;padding:40px;color:#27ae60;font-size:14px;">✅ 暂无待处理事项，一切运行良好！</div>':''}
+          <div class="activity-list">
+            ${mockData.fees.filter(f=>f.status==='逾期'||f.status==='待缴').slice(0,5).map(f=>{
+              const due = parseDate(f.dueDate); const diff = Math.ceil((due - now)/(1000*60*60*24));
+              return `<div class="activity-item"><div class="activity-dot" style="background:${diff<0?'#ff4757':'#ffa502'}"></div><div class="activity-content"><div class="act-text"><b>${f.name}</b> - ${f.period}${f.type}${diff<0?'<span style="color:#ff4757;font-weight:600;"> 已逾期</span>':` <span style="color:#e67e22;">剩余${diff}天</span>`}</div><div class="act-time">¥${f.amount.toLocaleString()} | ${f.dueDate}截止</div></div></div>`;
+            }).join('')}
+            ${mockData.charges.filter(c=>c.status==='待缴').slice(0,3).map(c=>`<div class="activity-item"><div class="activity-dot" style="background:#ff4757"></div><div class="activity-content"><div class="act-text"><b>${c.name}</b> - ${c.item}未缴</div><div class="act-time">¥${c.amount.toLocaleString()} | 招生老师: ${c.teacher}</div></div></div>`).join('')}
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>学员分布概览</div></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;">
+          <div style="padding:16px;background:#fafbfc;border-radius:10px;text-align:center;">
+            <div style="font-size:32px;margin-bottom:6px;">👦</div>
+            <div style="font-size:22px;font-weight:700;color:#4a90d9;">${maleStudents}</div>
+            <div style="font-size:12px;color:#888;">在读男生</div>
+          </div>
+          <div style="padding:16px;background:#fafbfc;border-radius:10px;text-align:center;">
+            <div style="font-size:32px;margin-bottom:6px;">👧</div>
+            <div style="font-size:22px;font-weight:700;color:#ff7b42;">${femaleStudents}</div>
+            <div style="font-size:12px;color:#888;">在读女生</div>
+          </div>
+          <div style="padding:16px;background:#fafbfc;border-radius:10px;text-align:center;">
+            <div style="font-size:32px;margin-bottom:6px;">📘</div>
+            <div style="font-size:22px;font-weight:700;color:#27ae60;">${mockData.students.filter(s=>s.gradStatus==='应届'&&s.status==='在读').length}</div>
+            <div style="font-size:12px;color:#888;">应届在读</div>
+          </div>
+          <div style="padding:16px;background:#fafbfc;border-radius:10px;text-align:center;">
+            <div style="font-size:32px;margin-bottom:6px;">📙</div>
+            <div style="font-size:22px;font-weight:700;color:#8e44ad;">${mockData.students.filter(s=>s.gradStatus!=='应届'&&s.status==='在读').length}</div>
+            <div style="font-size:12px;color:#888;">往届/中职在读</div>
+          </div>
+        </div>
+      </div>`;
+  },
+
+  students() {
+    const q = (document.getElementById('studentSearch')?.value||'').toLowerCase();
+    const filtered = mockData.students.filter(s=>!q||s.name.includes(q)||s.id.includes(q)||s.class.includes(q)||s.teacher.includes(q));
+    return `
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="title-dot"></span>学生列表</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="downloadTemplate()">📥 导入模板</button>
+            <label class="btn btn-outline btn-sm" style="cursor:pointer;">📤 导入Excel
+              <input type="file" accept=".csv,.xlsx" onchange="handleImport(event,'student')" style="display:none;">
+            </label>
+            <div class="dropdown-wrap">
+              <button class="btn btn-outline btn-sm" onclick="toggleExportMenu()">📋 导出 ▾</button>
+              <div class="dropdown-menu hidden" id="exportMenu">
+                <button class="dropdown-item" onclick="exportStudents('current')">导出当前列表</button>
+                <button class="dropdown-item" onclick="exportStudents('class')">按班级导出</button>
+                <button class="dropdown-item" onclick="exportStudents('all')">导出全部学生</button>
+              </div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openStudentModal()">＋ 新增学生</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input type="text" class="search-input" id="studentSearch" placeholder="🔍 搜索姓名/编号/班级/老师..." oninput="refreshCurrentPage()">
+        </div>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>编号</th><th>姓名</th><th>性别</th><th>学生类型</th><th>班级</th><th>生源地</th><th>目标院校</th><th>目标专业</th><th>招生老师</th><th>所在宿舍</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>${filtered.map(s=>{
+              const dorm = getStudentDorm(s.id);
+              return `<tr>
+                <td>${s.id}</td><td><b>${s.name}</b></td><td>${s.gender}</td>
+                <td><span class="tag ${s.gradStatus==='应届'?'tag-blue':s.gradStatus==='往届'?'tag-orange':'tag-green'}">${s.gradStatus}</span></td>
+                <td>${s.class}</td><td>${s.native}</td><td>${s.targetSchool}</td><td>${s.targetMajor}</td>
+                <td>${s.teacher}</td><td>${dorm?`<span class="tag tag-blue">${dorm}</span>`:'<span style="color:#ccc;">未分配</span>'}</td>
+                <td><span class="tag ${s.status==='在读'?'tag-green':s.status==='请假'?'tag-orange':'tag-gray'}">${s.status}</span></td>
+                <td>
+                  <button class="btn btn-outline btn-sm" onclick="editStudent('${s.id}')">✏️</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteStudent('${s.id}')">🗑️</button>
+                </td></tr>`;
+            }).join('')||'<tr><td colspan="12" style="text-align:center;padding:30px;color:#999;">暂无数据</td></tr>'}
+            </tbody>
+          </table>
+        </div>
+      </div>`;
+  },
+
+  classes() {
+    return `
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>班级列表</div><button class="btn btn-primary btn-sm" onclick="openClassModal()">＋ 新增班级</button></div>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>班级名称</th><th>班主任</th><th>容量</th><th>在读人数</th><th>教室</th><th>开班日期</th><th>操作</th></tr></thead>
+            <tbody>${mockData.classes.map(c=>`<tr>
+              <td><b>${c.name}</b></td><td>${c.headTeacher}</td>
+              <td>${c.capacity}</td>
+              <td><span class="tag ${c.current/c.capacity>0.8?'tag-orange':'tag-green'}">${c.current}/${c.capacity}</span></td>
+              <td>${c.room}</td><td>${c.startDate}</td>
+              <td><button class="btn btn-outline btn-sm" onclick="editClass('${c.id}')">✏️ 编辑</button></td>
+            </tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>`;
+  },
+
+  analysis() {
+    return `
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><span class="title-dot"></span>成绩录入与分析</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-outline btn-sm" onclick="downloadScoreTemplate()">📥 导入模板</button>
+            <button class="btn btn-outline btn-sm" onclick="document.getElementById('scoreImportFile').click()">📤 导入成绩</button>
+            <input type="file" id="scoreImportFile" accept=".csv" onchange="importScores(event)" style="display:none;">
+            <button class="btn btn-outline btn-sm" onclick="exportData('score')">📋 导出</button>
+            <button class="btn btn-primary btn-sm" onclick="openScoreModal()">＋ 录入成绩</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <select class="form-select" id="scoreClassFilter" onchange="refreshCurrentPage()" style="width:180px;">
+            <option value="">全部班级</option>
+            ${[...new Set(mockData.scores.map(s=>s.class))].map(c=>`<option value="${c}">${c}</option>`).join('')}
+          </select>
+          <select class="form-select" id="scoreWeekFilter" onchange="refreshCurrentPage()" style="width:160px;">
+            <option value="">全部周次</option>
+            ${[...new Set(mockData.scores.map(s=>s.week))].map(w=>`<option value="${w}">第${w}周</option>`).join('')}
+          </select>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>学生</th><th>类型</th><th>班级</th><th>周次</th><th>${this._yingjieHeader()}</th><th>职测</th><th>总分</th><th>操作</th></tr></thead>
+            <tbody>${this._filterScores().map(s=>{
+              const stu = mockData.students.find(x=>x.id===s.studentId);
+              const yj = stu?.gradStatus==='应届';
+              return `<tr>
+                <td><b>${s.name}</b></td>
+                <td><span class="tag ${yj?'tag-blue':'tag-orange'}">${stu?.gradStatus||''}</span></td>
+                <td>${s.class}</td><td>第${s.week}周</td>
+                <td>${yj?`<span title="学考成绩(档案)">语${stu.examScores?.chinese||'—'} 数${stu.examScores?.math||'—'} 英${stu.examScores?.english||'—'}</span>`:`${s.chinese} / ${s.math} / ${s.english}`}</td>
+                <td>${s.professional}</td>
+                <td><b>${totalScore(s)}</b></td>
+                <td><button class="btn btn-outline btn-sm" onclick="openReport('${s.studentId}')">📄 查看报告</button></td>
+              </tr>`;
+            }).join('')||'<tr><td colspan="8" style="text-align:center;padding:30px;color:#999;">暂无成绩数据</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>`;
+  },
+  _yingjieHeader(){ return '学考成绩(档案)'; },
+  _filterScores(){
+    const cf = document.getElementById('scoreClassFilter')?.value||'';
+    const wf = document.getElementById('scoreWeekFilter')?.value||'';
+    return mockData.scores.filter(s=>(!cf||s.class===cf)&&(!wf||s.week===+wf));
+  },
+
+  renewal() {
+    const q = (document.getElementById('renewalSearch')?.value||'').toLowerCase();
+    const tab = document.getElementById('renewalTab')?.dataset?.val||'all';
+    let data = mockData.fees.filter(f=>!q||f.name.includes(q)||f.class.includes(q));
+    if(tab==='overdue') data = data.filter(f=>f.status==='逾期');
+    else if(tab==='pending') data = data.filter(f=>f.status==='待缴');
+    else if(tab==='paid') data = data.filter(f=>f.status==='已缴');
+    const dueSoon = mockData.fees.filter(f=>{
+      const diff = Math.ceil((parseDate(f.dueDate)-now)/(1000*60*60*24));
+      return diff>=0&&diff<=7&&f.status==='待缴';
+    });
+    return `
+      ${dueSoon.length>0?`<div class="alert alert-warning"><span>⚠️</span> 有 <b>${dueSoon.length}</b> 名学生食宿费将在7天内到期，请及时提醒续费！</div>`:''}
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>续费管理（30天周期）</div>
+        <button class="btn btn-primary btn-sm" onclick="openFeeModal()">＋ 新增缴费记录</button></div>
+        <div class="toolbar">
+          <input type="text" class="search-input" id="renewalSearch" placeholder="🔍 搜索学生..." oninput="refreshCurrentPage()">
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-val="all" id="renewalTab" onclick="document.querySelectorAll('.filter-tab').forEach(b=>b.classList.remove('active'));this.classList.add('active');this.dataset.val='all';refreshCurrentPage()">全部</button>
+            <button class="filter-tab" onclick="this.classList.add('active');document.getElementById('renewalTab').classList.remove('active');document.getElementById('renewalTab').dataset.val='pending';refreshCurrentPage()">待缴</button>
+            <button class="filter-tab" onclick="this.classList.add('active');document.getElementById('renewalTab').classList.remove('active');document.getElementById('renewalTab').dataset.val='paid';refreshCurrentPage()">已缴</button>
+            <button class="filter-tab" style="color:#ff4757" onclick="this.classList.add('active');document.getElementById('renewalTab').classList.remove('active');document.getElementById('renewalTab').dataset.val='overdue';refreshCurrentPage()">逾期</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>学生</th><th>班级</th><th>费用类型</th><th>金额</th><th>缴费周期</th><th>截止日期</th><th>缴费日期</th><th>收款人</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>${data.map(f=>{
+              const diff = Math.ceil((parseDate(f.dueDate)-now)/(1000*60*60*24));
+              return `<tr>
+                <td><b>${f.name}</b></td><td>${f.class}</td><td>${f.type}</td>
+                <td>¥${f.amount.toLocaleString()}</td><td>${f.period}</td>
+                <td>${f.dueDate} ${diff>=0&&diff<=7&&f.status==='待缴'?`<span class="tag tag-orange">剩${diff}天</span>`:''}</td>
+                <td>${f.paidDate||'—'}</td><td>${f.collector||'—'}</td>
+                <td><span class="tag ${f.status==='已缴'?'tag-green':f.status==='逾期'?'tag-red':'tag-orange'}">${f.status}</span></td>
+                <td>${f.status!=='已缴'?`<button class="btn btn-success btn-sm" onclick="payFee('${f.id}')">确认缴费</button>`:'—'}</td>
+              </tr>`;
+            }).join('')||'<tr><td colspan="10" style="text-align:center;padding:30px;color:#999;">暂无数据</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>`;
+  },
+
+  fees() {
+    const q = (document.getElementById('chargeSearch')?.value||'').toLowerCase();
+    const statusFilter = document.getElementById('chargeStatusFilter')?.value||'';
+    const filteredCharges = mockData.charges.filter(c=>{
+      if(q && !c.name.includes(q) && !c.teacher.includes(q) && !c.item.includes(q)) return false;
+      if(statusFilter && c.status!==statusFilter) return false;
+      return true;
+    });
+    const teacherSummary = {};
+    mockData.charges.forEach(c=>{ if(!teacherSummary[c.teacher]) teacherSummary[c.teacher]={count:0,total:0,paid:0}; teacherSummary[c.teacher].count++; teacherSummary[c.teacher].total+=c.amount; if(c.status==='已缴') teacherSummary[c.teacher].paid+=c.amount; });
+    return `
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="title-dot"></span>收费明细</div><button class="btn btn-primary btn-sm" onclick="openChargeModal()">＋ 新增收费</button></div>
+          <div class="toolbar">
+            <input type="text" class="search-input" id="chargeSearch" placeholder="🔍 搜索学生/老师/项目..." oninput="refreshCurrentPage()">
+            <select class="form-select" id="chargeStatusFilter" onchange="refreshCurrentPage()" style="width:140px;">
+              <option value="">全部状态</option>
+              <option value="已缴">已缴</option>
+              <option value="待缴">待缴</option>
+            </select>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>学生</th><th>收费项目</th><th>金额</th><th>招生老师</th><th>收款人</th><th>日期</th><th>状态</th><th>操作</th></tr></thead>
+              <tbody>${filteredCharges.map(c=>`<tr>
+                <td>${c.name}</td><td>${c.item}</td><td>¥${c.amount.toLocaleString()}</td>
+                <td>${c.teacher}</td><td>${c.collector||'—'}</td><td>${c.date}</td>
+                <td><span class="tag ${c.status==='已缴'?'tag-green':'tag-red'}">${c.status}</span></td>
+                <td>
+                  <button class="btn btn-outline btn-sm" onclick="editCharge('${c.id}')">✏️</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteCharge('${c.id}')">🗑️</button>
+                </td>
+              </tr>`).join('')}</tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="title-dot"></span>招生老师</div></div>
+          <div class="table-container">
+            <table>
+              <thead><tr><th>招生老师</th><th>负责学生数</th><th>应收总额</th><th>已收总额</th><th>未收总额</th><th>收款率</th><th>操作</th></tr></thead>
+              <tbody>${Object.entries(teacherSummary).map(([k,v])=>{
+                const pct = v.total>0?Math.round(v.paid/v.total*100):0;
+                const et = mockData.enrollmentTeachers.find(x=>x.name===k);
+                return `<tr>
+                  <td><b>${k}</b></td><td>${v.count}人</td><td>¥${v.total.toLocaleString()}</td>
+                  <td>¥${v.paid.toLocaleString()}</td><td>¥${(v.total-v.paid).toLocaleString()}</td>
+                  <td><span class="tag ${pct>=80?'tag-green':pct>=50?'tag-orange':'tag-red'}">${pct}%</span></td>
+                  <td>${et?`<button class="btn btn-outline btn-sm" onclick="openEnrollmentModal('${et.id}')">✏️</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteEnrollment('${et.id}')">🗑️</button>`:'<span style="color:#999;">—</span>'}</td>
+                </tr>`;
+              }).join('')}</tbody>
+            </table>
+          </div>
+        </div>
+      </div>`;
+  },
+
+  schedule() {
+    return `
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>班级课表</div>
+        <div style="display:flex;gap:8px;align-items:center;">
+        <select class="form-select" id="scheduleClassSelect" onchange="renderScheduleTable()" style="width:180px;">
+          ${mockData.classes.map(c=>`<option value="${c.name}">${c.name}</option>`).join('')}
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="exportSchedule()">📋 导出课表</button>
+        </div></div>
+        <div id="scheduleTableContainer"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>排课管理</div><button class="btn btn-primary btn-sm" onclick="openScheduleModal()">＋ 添加课程</button></div>
+        <div class="alert alert-info"><span>💡</span> 排课系统会自动检测冲突，并实时同步到教师薪酬模块的课时统计中。</div>
+        <div class="toolbar">
+          <select class="form-select" id="scheduleManageFilter" onchange="refreshCurrentPage()" style="width:180px;">
+            <option value="">全部班级</option>
+            ${mockData.classes.map(c=>`<option value="${c.name}">${c.name}</option>`).join('')}
+          </select>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>班级</th><th>星期</th><th>时间</th><th>课程</th><th>授课教师</th><th>操作</th></tr></thead>
+            <tbody>${mockData.schedule.filter(s=>{
+              const f = document.getElementById('scheduleManageFilter')?.value||'';
+              return !f || s.className===f;
+            }).map(s=>`<tr>
+              <td>${s.className}</td><td>${['周一','周二','周三','周四','周五','周六','周日'][s.day]}</td>
+              <td>${getPeriodLabel(s.period)}</td><td>${s.subject}</td><td>${s.teacher}</td>
+              <td><button class="btn btn-danger btn-sm" onclick="removeSchedule('${s.id}')">删除</button></td>
+            </tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>`;
+  },
+
+  salary() {
+    return `
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>教师信息管理</div>
+        <button class="btn btn-primary btn-sm" onclick="openTeacherModal()">＋ 新增教师</button></div>
+        <div class="table-container" style="margin-bottom:4px;">
+          <table>
+            <thead><tr><th>教师姓名</th><th>任教科目</th><th>课时单价(元)</th><th>周排课数</th><th>月薪估算</th><th>操作</th></tr></thead>
+            <tbody>${mockData.teacherSalary.map(t=>{
+              const cnt = getTeacherScheduleCount(t.name);
+              return `<tr>
+                <td><b>${t.name}</b></td><td>${t.subject}</td>
+                <td>¥${t.ratePerClass}</td><td>${cnt}节</td>
+                <td>¥${(cnt*t.ratePerClass*4).toLocaleString()}</td>
+                <td>
+                  <button class="btn btn-outline btn-sm" onclick="openTeacherModal('${t.id}')">✏️ 编辑</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteTeacher('${t.id}')">🗑️</button>
+                </td></tr>`;
+            }).join('')}</tbody>
+          </table>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>教师课时费结算（2026年7月）</div>
+        <button class="btn btn-outline btn-sm" onclick="exportData('salary')">📋 导出报表</button></div>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>教师</th><th>科目</th><th>排课数(周)</th><th>课时单价</th><th>月薪合计</th><th>操作</th></tr></thead>
+            <tbody>${mockData.teacherSalary.map(t=>{
+              const cnt = getTeacherScheduleCount(t.name);
+              const total = cnt * t.ratePerClass * 4;
+              return `<tr>
+                <td><b>${t.name}</b></td><td>${t.subject}</td><td>${cnt}节/周</td>
+                <td><input type="number" value="${t.ratePerClass}" onchange="updateRate('${t.name}',this.value)" style="width:70px;padding:4px 8px;border:1px solid #ddd;border-radius:6px;font-size:13px;"></td>
+                <td style="font-weight:700;color:#ff7b42;font-size:15px;">¥${total.toLocaleString()}</td>
+                <td><button class="btn btn-outline btn-sm" onclick="viewTeacherSchedule('${t.name}')">查看课表</button></td>
+              </tr>`;
+            }).join('')}</tbody>
+            <tfoot><tr style="background:#fafbfc;font-weight:700;">
+              <td colspan="4" style="text-align:right;">合计：</td>
+              <td style="color:#ff7b42;font-size:16px;">¥${mockData.teacherSalary.reduce((s,t)=>s+getTeacherScheduleCount(t.name)*t.ratePerClass*4,0).toLocaleString()}</td><td></td>
+            </tr></tfoot>
+          </table>
+        </div>
+      </div>`;
+  },
+  enrollment() {
+    const teachers = mockData.enrollmentTeachers;
+    const totalStudents = teachers.reduce((s,t)=>s+t.studentCount,0);
+    return `
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon orange">👥</div><div class="stat-info"><div class="stat-value">${teachers.length}</div><div class="stat-label">招生老师</div></div></div>
+        <div class="stat-card"><div class="stat-icon blue">👨‍🎓</div><div class="stat-info"><div class="stat-value">${totalStudents}</div><div class="stat-label">招生人数</div></div></div>
+        <div class="stat-card"><div class="stat-icon green">📊</div><div class="stat-info"><div class="stat-value">${teachers.map(t=>t.region).filter((v,i,a)=>a.indexOf(v)===i).length}</div><div class="stat-label">覆盖片区</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>招生老师信息</div>
+        <button class="btn btn-primary btn-sm" onclick="openEnrollmentModal()">＋ 新增招生老师</button></div>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>姓名</th><th>手机号</th><th>负责片区</th><th>目标院校</th><th>招生人数</th><th>备注</th><th>操作</th></tr></thead>
+            <tbody>${teachers.map(t=>`<tr>
+              <td><b>${t.name}</b></td><td>${t.phone}</td><td><span class="tag tag-orange">${t.region}</span></td>
+              <td>${t.targetSchools.join('、')}</td><td>${t.studentCount}人</td><td>${t.note}</td>
+              <td><button class="btn btn-outline btn-sm" onclick="viewEnrollmentStudents('${t.name}')">👁️ 学生</button>
+              <button class="btn btn-outline btn-sm" onclick="openEnrollmentModal('${t.id}')">✏️ 编辑</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteEnrollment('${t.id}')">🗑️</button></td>
+            </tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>`;
+  },
+  dormitory() {
+    const maleRooms = mockData.dormitories.filter(d=>d.type==='男生宿舍');
+    const femaleRooms = mockData.dormitories.filter(d=>d.type==='女生宿舍');
+    const totalStudents = mockData.dormitories.reduce((s,d)=>s+d.students.length,0);
+    return `
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon blue">🏠</div><div class="stat-info"><div class="stat-value">${mockData.dormitories.length}</div><div class="stat-label">宿舍总数</div></div></div>
+        <div class="stat-card"><div class="stat-icon orange">👨‍🎓</div><div class="stat-info"><div class="stat-value">${totalStudents}</div><div class="stat-label">入住学生</div></div></div>
+        <div class="stat-card"><div class="stat-icon green">🛏️</div><div class="stat-info"><div class="stat-value">${mockData.dormitories.reduce((s,d)=>s+d.beds-d.students.length,0)}</div><div class="stat-label">空余床位</div></div></div>
+      </div>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="title-dot"></span>👦 男生宿舍</div>
+          <button class="btn btn-primary btn-sm" onclick="openDormModal('男生宿舍')">＋ 新增房间</button></div>
+          ${maleRooms.length===0?'<div class="empty-state">暂无男生宿舍记录</div>':maleRooms.map(d=>`<div class="card" style="margin:12px 0;box-shadow:0 1px 4px rgba(0,0,0,.06);">
+            <div class="card-header" style="padding:10px 16px;"><div class="card-title" style="font-size:14px;"><b>${d.building} ${d.room}</b>（${d.students.length}/${d.beds}人）${d.students.some(s=>s.isTrial)?'<span style="margin-left:8px;font-size:11px;color:#ff4757;background:#ffe6e6;padding:2px 6px;border-radius:4px;">含试读</span>':''}</div>
+            <div><button class="btn btn-success btn-sm" onclick="openDormCheckin('${d.id}')">➕ 入住</button>
+            <button class="btn btn-outline btn-sm" onclick="openDormTransfer('${d.id}')">🔄 调换</button>
+            <button class="btn btn-outline btn-sm" onclick="openDormModal('男生宿舍','${d.id}')">✏️</button></div></div>
+            <div class="table-container" style="margin:0;border-radius:0;"><table><thead><tr><th>学生</th><th>身份</th><th>班级</th><th>操作</th></tr></thead>
+            <tbody>${d.students.map(s=>`<tr style="${s.isTrial?'background:#fff5f5;':''}"><td style="${s.isTrial?'color:#ff4757;font-weight:600;':''}">${s.name}</td><td>${s.isTrial?'<span class="tag tag-red">试读</span>':'<span class="tag tag-green">正式</span>'}</td><td>${s.class}</td><td>${s.isTrial?'—':'<button class="btn btn-danger btn-sm" onclick="removeDormStudent(\''+d.id+'\',\''+s.studentId+'\')">移出</button>'}</td></tr>`).join('')}${d.students.length===0?'<tr><td colspan="4" style="text-align:center;color:#999;">暂未分配学生</td></tr>':''}</tbody></table></div>
+          </div>`).join('')}
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title"><span class="title-dot"></span>👧 女生宿舍</div>
+          <button class="btn btn-primary btn-sm" onclick="openDormModal('女生宿舍')">＋ 新增房间</button></div>
+          ${femaleRooms.length===0?'<div class="empty-state">暂无女生宿舍记录</div>':femaleRooms.map(d=>`<div class="card" style="margin:12px 0;box-shadow:0 1px 4px rgba(0,0,0,.06);">
+            <div class="card-header" style="padding:10px 16px;"><div class="card-title" style="font-size:14px;"><b>${d.building} ${d.room}</b>（${d.students.length}/${d.beds}人）${d.students.some(s=>s.isTrial)?'<span style="margin-left:8px;font-size:11px;color:#ff4757;background:#ffe6e6;padding:2px 6px;border-radius:4px;">含试读</span>':''}</div>
+            <div><button class="btn btn-success btn-sm" onclick="openDormCheckin('${d.id}')">➕ 入住</button>
+            <button class="btn btn-outline btn-sm" onclick="openDormTransfer('${d.id}')">🔄 调换</button>
+            <button class="btn btn-outline btn-sm" onclick="openDormModal('女生宿舍','${d.id}')">✏️</button></div></div>
+            <div class="table-container" style="margin:0;border-radius:0;"><table><thead><tr><th>学生</th><th>身份</th><th>班级</th><th>操作</th></tr></thead>
+            <tbody>${d.students.map(s=>`<tr style="${s.isTrial?'background:#fff5f5;':''}"><td style="${s.isTrial?'color:#ff4757;font-weight:600;':''}">${s.name}</td><td>${s.isTrial?'<span class="tag tag-red">试读</span>':'<span class="tag tag-green">正式</span>'}</td><td>${s.class}</td><td>${s.isTrial?'—':'<button class="btn btn-danger btn-sm" onclick="removeDormStudent(\''+d.id+'\',\''+s.studentId+'\')">移出</button>'}</td></tr>`).join('')}${d.students.length===0?'<tr><td colspan="4" style="text-align:center;color:#999;">暂未分配学生</td></tr>':''}</tbody></table></div>
+          </div>`).join('')}
+        </div>
+      </div>`;
+  },
+  marketing() {
+    const leads = mockData.marketing;
+    const trialCount = leads.filter(l=>l.status==='试听中').length;
+    const convertedCount = leads.filter(l=>l.status==='已转化').length;
+    const lostCount = leads.filter(l=>l.status==='已流失').length;
+    const conversionRate = leads.length>0?Math.round(convertedCount/leads.length*100):0;
+    const today = fmtDate(now);
+    const overdueTrials = leads.filter(l=>{
+      if(l.status!=='试听中') return false;
+      const endDate = new Date(parseDate(l.trialStart).getTime()+l.trialDays*86400000);
+      return parseDate(today) > endDate;
+    });
+    const q = (document.getElementById('marketingSearch')?.value||'').toLowerCase();
+    const tab = document.getElementById('marketingTab')?.dataset?.val||'all';
+    let data = leads.filter(l=>!q||l.name.includes(q)||l.teacher.includes(q)||l.targetSchool.includes(q));
+    if(tab==='trial') data = data.filter(l=>l.status==='试听中');
+    else if(tab==='converted') data = data.filter(l=>l.status==='已转化');
+    else if(tab==='lost') data = data.filter(l=>l.status==='已流失');
+    const teacherStats = {};
+    leads.forEach(l=>{ if(!teacherStats[l.teacher]) teacherStats[l.teacher]={trial:0,converted:0}; teacherStats[l.teacher].trial++; if(l.status==='已转化') teacherStats[l.teacher].converted++; });
+    return `
+      ${overdueTrials.length>0?`<div class="alert alert-warning"><span>⚠️</span> 有 <b>${overdueTrials.length}</b> 名试听学生体验期已过，请及时跟进转化！<span style="margin-left:auto;cursor:pointer;text-decoration:underline;" onclick="document.getElementById('marketingTab').dataset.val='trial';refreshCurrentPage()">查看详情 →</span></div>`:''}
+      <div class="stats-grid">
+        <div class="stat-card"><div class="stat-icon orange">👥</div><div class="stat-info"><div class="stat-value">${leads.length}</div><div class="stat-label">总客源</div></div></div>
+        <div class="stat-card"><div class="stat-icon blue">🎧</div><div class="stat-info"><div class="stat-value">${trialCount}</div><div class="stat-label">试听中</div></div></div>
+        <div class="stat-card"><div class="stat-icon green">✅</div><div class="stat-info"><div class="stat-value">${convertedCount}</div><div class="stat-label">已转化</div></div></div>
+        <div class="stat-card"><div class="stat-icon purple">📊</div><div class="stat-info"><div class="stat-value">${conversionRate}%</div><div class="stat-label">转化率</div></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>招生老师转化统计</div></div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;">
+          ${Object.entries(teacherStats).map(([name,stat])=>`<div style="padding:16px;background:#fafbfc;border-radius:10px;border-left:3px solid ${stat.converted/stat.trial>=0.5?'#27ae60':'#ffa502'};">
+            <div style="font-weight:600;margin-bottom:8px;">👤 ${name}</div>
+            <div style="display:flex;gap:20px;font-size:13px;">
+              <div>试听：<b>${stat.trial}</b>人</div><div>转化：<b>${stat.converted}</b>人</div>
+              <div style="color:${stat.converted/stat.trial>=0.5?'#27ae60':'#ffa502'};font-weight:600;">${Math.round(stat.converted/stat.trial*100)}%</div>
+            </div>
+          </div>`).join('')}
+          ${Object.keys(teacherStats).length===0?'<div style="padding:20px;text-align:center;color:#999;">暂无统计数据</div>':''}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="title-dot"></span>试听学生管理</div>
+        <button class="btn btn-primary btn-sm" onclick="openMarketingModal()">＋ 登记试听学生</button></div>
+        <div class="toolbar">
+          <input type="text" class="search-input" id="marketingSearch" placeholder="🔍 搜索学生/老师/院校..." oninput="refreshCurrentPage()">
+          <div class="filter-tabs">
+            <button class="filter-tab active" data-val="all" id="marketingTab" onclick="document.querySelectorAll('#marketingTab').forEach(b=>b.classList.remove('active'));this.classList.add('active');this.dataset.val='all';refreshCurrentPage()">全部</button>
+            <button class="filter-tab" style="color:#ff7b42" onclick="this.classList.add('active');document.getElementById('marketingTab').classList.remove('active');document.getElementById('marketingTab').dataset.val='trial';refreshCurrentPage()">试听中</button>
+            <button class="filter-tab" style="color:#27ae60" onclick="this.classList.add('active');document.getElementById('marketingTab').classList.remove('active');document.getElementById('marketingTab').dataset.val='converted';refreshCurrentPage()">已转化</button>
+            <button class="filter-tab" style="color:#888" onclick="this.classList.add('active');document.getElementById('marketingTab').classList.remove('active');document.getElementById('marketingTab').dataset.val='lost';refreshCurrentPage()">已流失</button>
+          </div>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead><tr><th>姓名</th><th>性别</th><th>类型</th><th>试听批次</th><th>目标院校</th><th>招生老师</th><th>试听日期</th><th>体验天数</th><th>宿舍</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>${data.map(l=>{
+              const trialEnd = parseDate(l.trialStart);
+              trialEnd.setDate(trialEnd.getDate()+l.trialDays);
+              const remainDays = l.status==='试听中'?Math.ceil((trialEnd-now)/(86400000)):'—';
+              return `<tr>
+                <td style="white-space:nowrap;"><b style="letter-spacing:2px;font-size:14px;">${l.name}</b></td><td>${l.gender}</td>
+                <td><span class="tag ${l.gradStatus==='应届'?'tag-blue':l.gradStatus==='往届'?'tag-orange':'tag-green'}">${l.gradStatus}</span></td>
+                <td><span class="tag ${l.batch==='一期'?'tag-blue':l.batch==='二期'?'tag-purple':'tag-orange'}" style="--tag-purple-bg:#f0e6ff;--tag-purple-color:#8e44ad;background:var(--tag-purple-bg);color:var(--tag-purple-color);">${l.batch||'一期'}</span></td>
+                <td>${l.targetSchool}</td><td><b>${l.teacher}</b></td>
+                <td>${l.trialStart}</td>
+                <td>${l.trialDays}天 ${remainDays!=='—'?`<span style="color:${remainDays<=2?'#ff4757':'#ffa502'};font-size:11px;">(剩${remainDays}天)</span>`:''}</td>
+                <td>${l.dormitory?`${l.dormitory.building} ${l.dormitory.room}`:'<span style="color:#999;">未安排</span>'}</td>
+                <td><span class="tag ${l.status==='试听中'?'tag-orange':l.status==='已转化'?'tag-green':'tag-gray'}">${l.status}</span></td>
+                <td style="white-space:nowrap;">
+                  ${l.status==='试听中'?`<button class="btn btn-success btn-sm" onclick="convertLead('${l.id}')">🎓 转化</button>`:''}
+                  ${l.status==='试听中'?`<button class="btn btn-danger btn-sm" onclick="loseLead('${l.id}')">❌ 流失</button>`:''}
+                  <button class="btn btn-outline btn-sm" onclick="openMarketingModal('${l.id}')">✏️</button>
+                  <button class="btn btn-danger btn-sm" onclick="deleteMarketing('${l.id}')">🗑️</button>
+                </td>
+              </tr>`;
+            }).join('')||'<tr><td colspan="11" style="text-align:center;padding:30px;color:#999;">暂无试听学生数据</td></tr>'}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+};
+
+function getPeriodLabel(p) {
+  const labels = ['第一节 8:40-9:25','第二节 9:45-10:30','第三节 10:40-11:25','第四节 14:00-14:45','第五节 14:55-15:40','第六节 15:50-16:35','第七节 16:45-17:30','晚自习1 18:30-19:15','晚自习2 19:25-20:10','晚自习3 20:20-21:05'];
+  return labels[p]||'';
+}
+
+// ==================== NAVIGATION ====================
+function navigateTo(page) {
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(el=>el.classList.toggle('active',el.dataset.page===page));
+  const titles = {dashboard:'工作台首页',students:'学生管理',classes:'班级管理',analysis:'学情分析',renewal:'续费管理',fees:'收费管理',schedule:'教学管理',salary:'教师管理',enrollment:'招生管理',dormitory:'宿舍管理',marketing:'营销管理'};
+  pageTitle.textContent = titles[page]||page;
+  refreshCurrentPage();
+}
+function refreshCurrentPage() { pageContent.innerHTML = renders[currentPage]?renders[currentPage]():''; if(currentPage==='schedule') setTimeout(renderScheduleTable,50); syncState(); }
+
+// ==================== STUDENT CRUD ====================
+function openStudentModal(sid) {
+  editingStudent = sid ? mockData.students.find(s=>s.id===sid) : null;
+  const s = editingStudent||{name:'',gender:'男',phone:'',native:'',gradStatus:'应届',targetSchool:'',targetMajor:'',teacher:'李老师',class:'冲刺一班',status:'在读',examScores:{chinese:80,math:80,english:80}};
+  const es = s.examScores||{chinese:80,math:80,english:80};
+  const isYj = s.gradStatus==='应届';
+  const examTotal = getScoreVal(es.chinese)+getScoreVal(es.math)+getScoreVal(es.english);
+  showModal(`
+    <div class="modal-header"><h3>${editingStudent?'编辑学生':'新增学生'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form id="studentForm" onsubmit="saveStudent(event)">
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">姓名<span class="required">*</span></label><input class="form-input" name="name" value="${s.name}" required></div>
+      <div class="form-group"><label class="form-label">性别</label><select class="form-select" name="gender"><option ${s.gender==='男'?'selected':''}>男</option><option ${s.gender==='女'?'selected':''}>女</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">手机号</label><input class="form-input" name="phone" value="${s.phone||''}"></div>
+      <div class="form-group"><label class="form-label">身份证号</label><input class="form-input" name="idCard" value="${s.idCard||''}"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">生源地</label><input class="form-input" name="native" value="${s.native||''}"></div>
+      <div class="form-group"><label class="form-label">学生类型</label><select class="form-select" name="gradStatus" onchange="toggleExamScores()"><option ${s.gradStatus==='应届'?'selected':''}>应届</option><option ${s.gradStatus==='往届'?'selected':''}>往届</option><option ${s.gradStatus==='中职'?'selected':''}>中职</option></select></div></div>
+      <div id="examScoreFields" style="background:#fafbfc;border-radius:8px;padding:14px;margin-bottom:16px;${isYj?'':'display:none'}">
+        <div style="font-size:13px;font-weight:600;color:#1a3a5c;margin-bottom:10px;">📝 学考成绩（仅应届生填写，请直接输入分数）</div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">语文学考分数（满分100）</label><input class="form-input" type="number" name="exam_chinese" min="0" max="100" value="${es.chinese}"></div>
+          <div class="form-group"><label class="form-label">数学学考分数（满分100）</label><input class="form-input" type="number" name="exam_math" min="0" max="100" value="${es.math}"></div>
+        </div>
+        <div class="form-group"><label class="form-label">英语学考分数（满分100）</label><input class="form-input" type="number" name="exam_english" min="0" max="100" value="${es.english}"></div>
+        <div style="font-size:11px;color:#999;margin-top:6px;">学考总分：${examTotal}分</div>
+      </div>
+      <div class="form-row"><div class="form-group"><label class="form-label">目标院校</label><input class="form-input" name="targetSchool" value="${s.targetSchool||''}"></div>
+      <div class="form-group"><label class="form-label">目标专业</label><input class="form-input" name="targetMajor" value="${s.targetMajor||''}"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">招生老师</label><select class="form-select" name="teacher"><option ${s.teacher==='李老师'?'selected':''}>李老师</option><option ${s.teacher==='王老师'?'selected':''}>王老师</option><option ${s.teacher==='张老师'?'selected':''}>张老师</option></select></div>
+      <div class="form-group"><label class="form-label">班级</label><select class="form-select" name="class">${mockData.classes.map(c=>`<option ${s.class===c.name?'selected':''}>${c.name}</option>`).join('')}</select></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">所在宿舍</label><select class="form-select" name="dormId"><option value="">未分配</option>${mockData.dormitories.map(d=>{const occ=d.students.filter(st=>st.studentId!==(editingStudent?.id||'')).length;return `<option value="${d.id}" ${getStudentDormId(s.id)===d.id?'selected':''} ${occ>=d.beds&&getStudentDormId(s.id)!==d.id?'disabled':''}>${d.building} ${d.room}（${d.type}，${occ>=d.beds?'已满':occ+'/'+d.beds+'人'}）</option>`}).join('')}</select></div>
+      ${editingStudent?`<div class="form-group"><label class="form-label">学生状态</label><select class="form-select" name="status"><option ${s.status==='在读'?'selected':''}>在读</option><option ${s.status==='休学'?'selected':''}>休学</option><option ${s.status==='请假'?'selected':''}>请假</option></select></div>`:'<div class="form-group"></div>'}</div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>`);
+}
+function toggleExamScores(){
+  const sel = document.querySelector('[name="gradStatus"]');
+  const box = document.getElementById('examScoreFields');
+  if(sel && box) box.style.display = sel.value==='应届' ? '' : 'none';
+}
+function saveStudent(e) {
+  e.preventDefault();
+  const fd = new FormData(e.target);
+  const data = Object.fromEntries(fd.entries());
+  const dormId = data.dormId; delete data.dormId;
+  if(data.gradStatus==='应届'){
+    data.examScores = {chinese:+data.exam_chinese||0, math:+data.exam_math||0, english:+data.exam_english||0};
+  }
+  ['exam_chinese','exam_math','exam_english'].forEach(k=>delete data[k]);
+  if(editingStudent){
+    Object.assign(editingStudent,data);
+    assignStudentToDorm(editingStudent.id, dormId||'');
+    toast('学生信息已更新','success');
+  }
+  else {
+    data.id = 'S'+String(mockData.students.length+1).padStart(3,'0'); data.enrollDate = fmtDate(now); data.status = '在读'; if(data.gradStatus!=='应届') delete data.examScores; mockData.students.push(data);
+    if(dormId) assignStudentToDorm(data.id, dormId);
+    toast('学生添加成功','success');
+  }
+  closeModal(); refreshCurrentPage();
+}
+function editStudent(sid){ openStudentModal(sid); }
+function deleteStudent(sid){ if(confirm('确定要删除该学生吗？此操作不可撤销。')){ removeStudentFromAllDorms(sid); mockData.students = mockData.students.filter(s=>s.id!==sid); toast('学生已删除','success'); refreshCurrentPage(); } }
+
+// ==================== CLASS CRUD ====================
+function openClassModal(cid) {
+  const c = cid ? mockData.classes.find(cl=>cl.id===cid) : {name:'',headTeacher:'',capacity:30,room:''};
+  showModal(`
+    <div class="modal-header"><h3>${cid?'编辑班级':'新增班级'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form onsubmit="saveClass(event${cid?`,'${cid}'`:''})">
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">班级名称<span class="required">*</span></label><input class="form-input" name="name" value="${c.name}" required></div>
+      <div class="form-group"><label class="form-label">班主任</label><input class="form-input" name="headTeacher" value="${c.headTeacher}"></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">容量</label><input class="form-input" type="number" name="capacity" value="${c.capacity}"></div>
+      <div class="form-group"><label class="form-label">教室</label><input class="form-input" name="room" value="${c.room}"></div></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>`);
+}
+function saveClass(e,cid){
+  e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries()); data.capacity=+data.capacity;
+  if(cid){ Object.assign(mockData.classes.find(c=>c.id===cid),data); toast('班级信息已更新','success'); }
+  else{ data.id='C'+String(mockData.classes.length+1).padStart(3,'0'); data.current=0; data.startDate=fmtDate(now); mockData.classes.push(data); toast('班级添加成功','success'); }
+  closeModal(); refreshCurrentPage();
+}
+function editClass(cid){ openClassModal(cid); }
+
+// ==================== SCORE / REPORT ====================
+function openScoreModal() {
+  showModal(`
+    <div class="modal-header"><h3>录入成绩</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form onsubmit="saveScore(event)">
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">学生<span class="required">*</span></label><select class="form-select" name="studentId" id="scoreStuSelect" onchange="updateScoreForm()" required>${mockData.students.filter(s=>s.status==='在读').map(s=>`<option value="${s.id}">${s.name}(${s.class}) [${s.gradStatus}]</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">周次<span class="required">*</span></label><input class="form-input" type="number" name="week" min="1" max="30" value="${Math.max(...mockData.scores.map(s=>s.week),0)+1}" required></div>
+      <div id="scoreFields">
+        <div class="form-row"><div class="form-group"><label class="form-label">语文（满分100）</label><input class="form-input" type="number" name="chinese" min="0" max="100"></div>
+        <div class="form-group"><label class="form-label">数学（满分100）</label><input class="form-input" type="number" name="math" min="0" max="100"></div></div>
+        <div class="form-row"><div class="form-group"><label class="form-label">英语（满分100）</label><input class="form-input" type="number" name="english" min="0" max="100"></div>
+        <div class="form-group"><label class="form-label">职测（满分300）</label><input class="form-input" type="number" name="professional" min="0" max="300"></div></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">保存成绩</button></div>
+    </form>`);
+}
+
+function updateScoreForm() {
+  const sid = document.getElementById('scoreStuSelect')?.value;
+  const stu = mockData.students.find(s=>s.id===sid);
+  const box = document.getElementById('scoreFields');
+  if(!stu||!box) return;
+  if(stu.gradStatus==='应届'){
+    const es = stu.examScores||{chinese:80,math:80,english:80};
+    const examTotal = getScoreVal(es.chinese)+getScoreVal(es.math)+getScoreVal(es.english);
+    box.innerHTML = `
+      <div class="alert alert-info"><span>ℹ️</span> 该学生为应届，学考成绩已在档案中登记（语${es.chinese}分 数${es.math}分 英${es.english}分，学考总分${examTotal}分）。此处仅需录入职测周测成绩。</div>
+      <div class="form-group"><label class="form-label">职测成绩<span class="required">*</span></label><input class="form-input" type="number" name="professional" min="0" max="300" value="80" required></div>`;
+  } else {
+    box.innerHTML = `
+      <div class="form-row"><div class="form-group"><label class="form-label">语文（满分100）</label><input class="form-input" type="number" name="chinese" min="0" max="100"></div>
+      <div class="form-group"><label class="form-label">数学（满分100）</label><input class="form-input" type="number" name="math" min="0" max="100"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">英语（满分100）</label><input class="form-input" type="number" name="english" min="0" max="100"></div>
+      <div class="form-group"><label class="form-label">职测（满分300）</label><input class="form-input" type="number" name="professional" min="0" max="300"></div></div>`;
+  }
+}
+
+function saveScore(e) {
+  e.preventDefault(); const fd = new FormData(e.target); const data={};
+  for(let[k,v]of fd.entries()) data[k]=v; data.week=+data.week;
+  const stu = mockData.students.find(s=>s.id===data.studentId);
+  data.name=stu.name; data.class=stu.class;
+  if(stu.gradStatus==='应届'){
+    data.professional = +data.professional||0;
+  } else {
+    ['chinese','math','english','professional'].forEach(k=>data[k]=+data[k]||0);
+  }
+  mockData.scores.push(data); toast('成绩录入成功','success');
+  closeModal(); refreshCurrentPage();
+}
+
+function openReport(sid) {
+  const stu = mockData.students.find(s=>s.id===sid);
+  const scores = mockData.scores.filter(s=>s.studentId===sid).sort((a,b)=>a.week-b.week);
+  const yj = stu.gradStatus==='应届';
+  const avg = (arr)=>arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length):0;
+  const totalScores = scores.map(s=>totalScore(s));
+  const subjNames = yj ? ['职测'] : ['语文','数学','英语','职测'];
+  const subjVals = yj ? ['professional'] : ['chinese','math','english','professional'];
+  const avgs = subjVals.map(k=>avg(scores.map(s=>getScoreVal(s[k]))));
+  const classStudents = mockData.students.filter(s=>s.class===stu.class);
+  const es = yj ? (stu.examScores||{chinese:80,math:80,english:80}) : null;
+  const examTotal = yj ? getScoreVal(es.chinese)+getScoreVal(es.math)+getScoreVal(es.english) : 0;
+  const overallAvg = avg(totalScores);
+  const evaluation = overallAvg>320?'学习态度端正，成绩稳步提升，继续保持！':overallAvg>250?'成绩良好，还有提升空间，继续加油！':'需要加强基础知识的巩固，建议增加课后练习量。';
+
+  // Build report HTML for Word export
+  const wordHtml = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><title>学情分析报告</title><style>body{font-family:"Microsoft YaHei",sans-serif;font-size:13px;color:#333;padding:30px;}h1{text-align:center;font-size:20px;margin-bottom:20px;}h3{font-size:14px;color:#1a3a5c;border-bottom:2px solid #ff7b42;padding-bottom:4px;margin:16px 0 8px 0;}table{width:100%;border-collapse:collapse;margin-bottom:14px;}th,td{border:1px solid #ccc;padding:6px 8px;font-size:12px;}th{background:#f0f0f0;}</style></head><body>'+
+    '<h1>'+stu.name+' 学情分析报告</h1>'+
+    '<p><b>姓名：</b>'+stu.name+' &nbsp;&nbsp; <b>性别：</b>'+stu.gender+' &nbsp;&nbsp; <b>班级：</b>'+stu.class+' &nbsp;&nbsp; <b>类型：</b>'+stu.gradStatus+'</p>'+
+    '<p><b>目标院校：</b>'+stu.targetSchool+' &nbsp;&nbsp; <b>目标专业：</b>'+stu.targetMajor+'</p>'+
+    (yj?'<p><b>学考成绩：</b>语文'+es.chinese+'分 数学'+es.math+'分 英语'+es.english+'分 <b>学考总分：</b>'+examTotal+'分</p>':'')+
+    '<h3>成绩汇总</h3>'+
+    '<table><thead><tr><th>周次</th>'+(!yj?'<th>语文</th><th>数学</th><th>英语</th>':'')+'<th>职测</th><th>总分</th></tr></thead><tbody>'+
+    scores.map(s=>'<tr><td>第'+s.week+'周</td>'+(!yj?'<td>'+s.chinese+'</td><td>'+s.math+'</td><td>'+s.english+'</td>':'')+'<td>'+s.professional+'</td><td><b>'+totalScore(s)+'</b></td></tr>').join('')+
+    '<tr style="font-weight:700;background:#fafbfc;"><td>平均分</td>'+(yj?'':avgs.slice(0,3).map(a=>'<td>'+a+'</td>').join(''))+'<td>'+avgs[avgs.length-1]+'</td><td>'+overallAvg+'</td></tr></tbody></table>'+
+    '<h3>综合评估</h3>'+
+    '<p><b>综合评价：</b>'+evaluation+'</p>'+
+    '<p style="text-align:right;color:#999;margin-top:20px;">楚怡教育 | 报告生成日期：'+fmtDate(now)+'</p></body></html>';
+
+  window._reportHtml = wordHtml;
+  window._reportName = stu.name+'_学情分析报告.doc';
+
+  // Score rows for on-screen preview
+  const scoreRows = scores.map(s=>'<tr><td>第'+s.week+'周</td>'+(yj?'':'<td>'+s.chinese+'</td><td>'+s.math+'</td><td>'+s.english+'</td>')+'<td>'+s.professional+'</td><td><b>'+totalScore(s)+'</b></td></tr>').join('');
+  const avgRow = '<tr style="font-weight:700;background:#fafbfc;"><td>平均分</td>'+(yj?'':avgs.slice(0,3).map(a=>'<td>'+a+'</td>').join(''))+'<td>'+avgs[avgs.length-1]+'</td><td><b>'+overallAvg+'</b></td></tr>';
+
+  showModal('<div class="modal-header"><h3>📄 '+stu.name+' - 学期个人报告</h3><button class="modal-close" onclick="closeModal()">✕</button></div>'+
+    '<div class="modal-body" style="max-width:750px;">'+
+    '<div class="report-preview">'+
+    '<div class="report-title">'+stu.name+' 学情分析报告</div>'+
+    '<table style="margin-bottom:16px;font-size:13px;">'+
+    '<tr><td style="width:100px;color:#888;">姓名：</td><td><b>'+stu.name+'</b></td><td style="width:100px;color:#888;">性别：</td><td>'+stu.gender+'</td></tr>'+
+    '<tr><td style="color:#888;">班级：</td><td>'+stu.class+'</td><td style="color:#888;">学生类型：</td><td><span class="tag '+(yj?'tag-blue':'tag-orange')+'">'+stu.gradStatus+'</span></td></tr>'+
+    '<tr><td style="color:#888;">目标院校：</td><td>'+stu.targetSchool+'</td><td style="color:#888;">目标专业：</td><td>'+stu.targetMajor+'</td></tr></table>'+
+    (yj?'<div class="alert alert-info"><span>📝</span> <b>学考成绩：</b>语文 '+es.chinese+'分 | 数学 '+es.math+'分 | 英语 '+es.english+'分 | <b>学考总分：'+examTotal+'分</b></div>':'')+
+    '<div class="report-section"><h4>成绩汇总</h4>'+
+    '<table style="font-size:12px;width:100%;">'+
+    '<thead><tr><th>周次</th>'+(yj?'':'<th>语文</th><th>数学</th><th>英语</th>')+'<th>职测</th><th>总分</th></tr></thead>'+
+    '<tbody>'+scoreRows+avgRow+'</tbody></table></div>'+
+    '<div class="report-section"><h4>成绩趋势</h4>'+
+    '<div style="background:#fafbfc;border-radius:8px;padding:16px;margin-top:8px;">'+
+    (totalScores.length>1?'<svg viewBox="0 0 500 180" width="100%" height="160">'+
+    '<polyline fill="none" stroke="#ff7b42" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" points="'+totalScores.map((v,i)=>''+(50+i*(400/Math.max(scores.length-1,1)))+','+(180-v*0.3-20)).join(' ')+'"/>'+
+    totalScores.map((v,i)=>'<circle cx="'+(50+i*(400/Math.max(scores.length-1,1)))+'" cy="'+(180-v*0.3-20)+'" r="5" fill="#fff" stroke="#ff7b42" stroke-width="2"/><text x="'+(50+i*(400/Math.max(scores.length-1,1)))+'" y="'+(180-v*0.3-30)+'" text-anchor="middle" font-size="10" fill="#888" font-weight="600">'+v+'</text>').join('')+
+    '<line x1="40" y1="160" x2="480" y2="160" stroke="#ddd" stroke-width="1"/><text x="490" y="164" font-size="10" fill="#999">周次</text></svg>'
+    :'<p style="color:#999;text-align:center;padding:20px;">需要至少2次周测成绩才能生成趋势图</p>')+
+    '</div></div>'+
+    '<div class="report-section"><h4>综合评估</h4>'+
+    '<div class="form-group" style="margin-top:8px;">'+
+    '<textarea id="reportEval" style="width:100%;min-height:80px;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:13px;font-family:inherit;resize:vertical;">'+evaluation+'</textarea>'+
+    '<div style="font-size:11px;color:#999;margin-top:4px;">💡 以上评价可编辑，修改后导出Word将包含更新后的内容</div>'+
+    '</div></div></div></div>'+
+    '<div class="modal-footer">'+
+    '<button class="btn btn-primary" onclick="downloadWordReport()">📄 导出Word报告</button>'+
+    '<button class="btn btn-secondary" onclick="closeModal()">关闭</button></div>');
+}
+
+function downloadWordReport() {
+  if(!window._reportHtml){toast('报告数据丢失，请重新打开报告','error');return;}
+  let html = window._reportHtml;
+  // Replace evaluation with the edited textarea content
+  const evalEl = document.getElementById('reportEval');
+  if(evalEl){
+    const newEval = evalEl.value.trim()||'综合评价待填写';
+    html = html.replace(/(<b>综合评价：<\/b>)([^<]+)/, '$1'+newEval);
+  }
+  const blob = new Blob(['\ufeff'+html],{type:'application/msword;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=window._reportName||'学情分析报告.doc';a.click();
+  toast('Word报告已导出，请用Microsoft Word打开','success');
+}
+
+// ==================== SCORE TEMPLATE / IMPORT ====================
+function downloadScoreTemplate(){
+  // 让用户选择班级
+  const className = prompt('请选择要生成模板的班级：\n\n可选班级：'+mockData.classes.map(c=>c.name).join('、'),mockData.classes[0].name);
+  if(!className) return;
+  const students = mockData.students.filter(s=>s.class===className&&s.status==='在读');
+  if(students.length===0){ toast(className+' 暂无在读学生','error'); return; }
+  const week = Math.max(...mockData.scores.map(s=>s.week),0)+1;
+  // 生成CSV模板
+  let csv = '\uFEFF学生编号,姓名,班级,学生类型,周次';
+  // 检查是否有非应届学生，决定列
+  const hasNonYingjie = students.some(s=>s.gradStatus!=='应届');
+  if(hasNonYingjie) csv += ',语文(满分100),数学(满分100),英语(满分100)';
+  csv += ',职测(满分300),备注\n';
+  students.forEach(s=>{
+    const yj = s.gradStatus==='应届';
+    csv += `${s.id},${s.name},${s.class},${s.gradStatus},第${week}周`;
+    if(hasNonYingjie){
+      if(yj) csv += ',(应届仅填职测),(应届仅填职测),(应届仅填职测)';
+      else csv += ',,,';
+    }
+    csv += `,,\n`;
+  });
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${className}_第${week}周_周测成绩模板.csv`;a.click();
+  toast(`${className} 第${week}周模板已下载（共${students.length}名学生）`,'success');
+}
+
+function importScores(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const lines=ev.target.result.split('\n').filter(l=>l.trim()&&!l.startsWith('学生编号'));
+    if(lines.length<1){toast('文件内容为空或格式不正确','error');return;}
+    let imported=0,skipped=0;
+    lines.forEach((line)=>{
+      const cols=line.split(',');
+      if(cols.length<6) return;
+      const sid=cols[0].trim();const name=cols[1].trim();const className=cols[2].trim();
+      const weekMatch = cols[4].trim().match(/(\d+)/);
+      const week = weekMatch?+weekMatch[1]:null;
+      if(!week||!sid){skipped++;return;}
+      const stu=mockData.students.find(s=>s.id===sid||s.name===name);
+      if(!stu){skipped++;return;}
+      const yj=stu.gradStatus==='应届';
+      const scoreData={studentId:stu.id,name:stu.name,class:stu.class,week:week};
+      if(yj){
+        // 应届：只有职测
+        const profIdx = cols.length>=8?7:6;
+        scoreData.professional = +cols[profIdx]?.trim()||0;
+      } else {
+        scoreData.chinese = +cols[5]?.trim()||0;
+        scoreData.math = +cols[6]?.trim()||0;
+        scoreData.english = +cols[7]?.trim()||0;
+        scoreData.professional = +cols[8]?.trim()||0;
+      }
+      mockData.scores.push(scoreData);imported++;
+    });
+    toast(`成功导入 ${imported} 条成绩${skipped>0?'，跳过 '+skipped+' 条':''}`,'success');
+    refreshCurrentPage();
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+// ==================== FEES ====================
+function payFee(fid){
+  const f = mockData.fees.find(f=>f.id===fid);
+  if(confirm(`确认 ${f.name} 已缴纳 ${f.period}${f.type} ¥${f.amount.toLocaleString()}？`)){
+    f.paidDate = fmtDate(now); f.status='已缴'; f.collector='张会计';
+    // 自动续期：截止日期往后推30天
+    if(f.dueDate){
+      const oldDueDate = new Date(f.dueDate);
+      const newDueDate = new Date(oldDueDate.getTime() + 30*24*60*60*1000);
+      f.dueDate = fmtDate(newDueDate);
+      f.period = '~'+f.dueDate;
+    }
+    // 同步更新关联的收费记录
+    if(f.chargeId){
+      const c = mockData.charges.find(x=>x.id===f.chargeId);
+      if(c){ c.status='已缴'; c.paidDate=f.paidDate; c.collector=f.collector; }
+    }
+    toast('缴费确认成功，已自动续费30天','success'); refreshCurrentPage();
+  }
+}
+
+function openFeeModal() {
+  const todayStr = fmtDate(now);
+  // 自动计算30天后的截止日期
+  const dueDateObj = new Date(now.getTime() + 30*24*60*60*1000);
+  const autoDueDate = fmtDate(dueDateObj);
+  showModal(`
+    <div class="modal-header"><h3>新增缴费记录</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form onsubmit="saveFee(event)">
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">学生<span class="required">*</span></label><select class="form-select" name="studentId" required>${mockData.students.filter(s=>s.status==='在读').map(s=>`<option value="${s.id}">${s.name}(${s.class})</option>`).join('')}</select></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">费用类型</label><select class="form-select" name="type"><option>食宿费</option><option>资料费</option><option>活动费</option></select></div>
+      <div class="form-group"><label class="form-label">金额</label><input class="form-input" type="number" name="amount" value="1500" required></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">缴费日期</label><input class="form-input" type="date" name="paidDateInput" value="${todayStr}"></div>
+      <div class="form-group"><label class="form-label">截止日期（30天周期）</label><input class="form-input" type="date" name="dueDateInput" value="${autoDueDate}"></div></div>
+      <div class="form-group"><label class="form-label">收款人</label><input class="form-input" name="collector" value="张会计"></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>`);
+}
+
+function saveFee(e){
+  e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries()); data.amount=+data.amount;
+  const stu=mockData.students.find(s=>s.id===data.studentId);
+  data.name=stu.name; data.class=stu.class; data.id='F'+String(mockData.fees.length+1).padStart(3,'0');
+  // 缴费周期用截止日期所在月份
+  const dueDate = data.dueDateInput || fmtDate(new Date(now.getTime()+30*24*60*60*1000));
+  data.dueDate = dueDate;
+  const dueObj = new Date(dueDate);
+  data.period = dueObj.getFullYear()+'-'+String(dueObj.getMonth()+1).padStart(2,'0');
+  const paidDate = data.paidDateInput;
+  if(paidDate){
+    data.paidDate = paidDate; data.status='已缴';
+  } else {
+    data.paidDate = null; data.status='待缴';
+  }
+  delete data.paidDateInput; delete data.dueDateInput;
+  mockData.fees.push(data); toast('缴费记录添加成功','success'); closeModal(); refreshCurrentPage();
+}
+
+// ==================== CHARGES ====================
+function openChargeModal(editId) {
+  const c = editId ? mockData.charges.find(x=>x.id===editId) : null;
+  const data = c||{studentId:'',item:'学费',amount:8000,collector:'张会计'};
+  const todayStr = fmtDate(now);
+  showModal(`
+    <div class="modal-header"><h3>${editId?'编辑收费记录':'新增收费记录'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form onsubmit="saveCharge(event${editId?`,'${editId}'`:''})">
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">学生<span class="required">*</span></label><select class="form-select" name="studentId" required>${mockData.students.map(s=>`<option value="${s.id}" ${s.id===data.studentId?'selected':''}>${s.name}</option>`).join('')}</select></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">收费项目</label><select class="form-select" name="item"><option ${data.item==='学费'?'selected':''}>学费</option><option ${data.item==='学杂费'?'selected':''}>学杂费</option><option ${data.item==='押金'?'selected':''}>押金</option><option ${data.item==='食宿'||data.item==='食宿费'?'selected':''}>食宿费</option></select></div>
+      <div class="form-group"><label class="form-label">金额</label><input class="form-input" type="number" name="amount" value="${data.amount}" required></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">收款人</label><input class="form-input" name="collector" value="${data.collector||'张会计'}"></div>
+      <div class="form-group"><label class="form-label">日期</label><input class="form-input" type="date" name="date" value="${data.date||todayStr}"></div></div>
+      <div class="form-group"><label class="form-label">状态</label><select class="form-select" name="status"><option ${data.status==='待缴'?'selected':''}>待缴</option><option ${data.status==='已缴'?'selected':''}>已缴</option></select></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>`);
+}
+
+function saveCharge(e,editId){
+  e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries()); data.amount=+data.amount;
+  const stu=mockData.students.find(s=>s.id===data.studentId);
+  data.name=stu.name; data.teacher=stu.teacher;
+  if(editId){
+    const c = mockData.charges.find(x=>x.id===editId);
+    if(c){
+      // 如果收费项目是食宿类，同步更新续费管理记录
+      const oldItem = c.item;
+      Object.assign(c,data);
+      if(oldItem==='食宿'||data.item==='食宿'){
+        syncFeeFromCharge(c);
+      }
+      toast('收费记录已更新','success');
+    }
+  } else {
+    data.id='CH'+String(mockData.charges.length+1).padStart(3,'0');
+    if(!data.date) data.date=fmtDate(now);
+    if(!data.status) data.status='待缴';
+    mockData.charges.push(data);
+    // 如果是食宿类收费，自动同步到续费管理
+    if(data.item==='食宿'){
+      syncFeeFromCharge(data);
+    }
+    toast('收费记录添加成功','success');
+  }
+  closeModal(); refreshCurrentPage();
+}
+
+function editCharge(cid){ openChargeModal(cid); }
+function deleteCharge(cid){
+  if(confirm('确定要删除该收费记录吗？此操作不可撤销。')){
+    const c = mockData.charges.find(x=>x.id===cid);
+    // 如果是食宿费，同步删除续费管理中的对应记录
+    if(c && c.item==='食宿'){
+      const feeIdx = mockData.fees.findIndex(f=>f.chargeId===cid);
+      if(feeIdx>=0){ mockData.fees.splice(feeIdx,1); }
+    }
+    mockData.charges = mockData.charges.filter(c=>c.id!==cid);
+    toast('收费记录已删除','success'); refreshCurrentPage();
+  }
+}
+// 收费管理中的食宿费同步到续费管理
+function syncFeeFromCharge(charge){
+  if(!charge || charge.item!=='食宿') return;
+  const stu = mockData.students.find(s=>s.id===charge.studentId);
+  if(!stu) return;
+  // 查找是否已有关联的续费记录
+  let fee = mockData.fees.find(f=>f.chargeId===charge.id);
+  if(!fee){
+    // 创建新的续费记录
+    fee = {
+      id:'F'+String(mockData.fees.length+1).padStart(3,'0'),
+      studentId:charge.studentId,
+      name:charge.name,
+      class:stu.class,
+      type:'食宿费',
+      chargeId:charge.id,
+      amount:charge.amount,
+      period:charge.date?charge.date.substring(0,7):fmtDate(now).substring(0,7),
+      dueDate:fmtDate(new Date(now.getTime()+30*24*60*60*1000)),
+      paidDate:charge.status==='已缴'?charge.date:null,
+      status:charge.status,
+      collector:charge.collector
+    };
+    mockData.fees.push(fee);
+  } else {
+    // 同步更新已有记录
+    fee.amount = charge.amount;
+    fee.status = charge.status;
+    fee.collector = charge.collector;
+    if(charge.status==='已缴' && !fee.paidDate) fee.paidDate = charge.date;
+    if(charge.status==='待缴') fee.paidDate = null;
+  }
+}
+
+// ==================== SCHEDULE ====================
+const periodLabels = ['第一节 8:40-9:25','第二节 9:45-10:30','第三节 10:40-11:25','第四节 14:00-14:45','第五节 14:55-15:40','第六节 15:50-16:35','第七节 16:45-17:30','晚自习1 18:30-19:15','晚自习2 19:25-20:10','晚自习3 20:20-21:05'];
+const days = ['周一','周二','周三','周四','周五','周六','周日'];
+
+function renderScheduleTable(){
+  const cname = document.getElementById('scheduleClassSelect')?.value||'冲刺一班';
+  let html = '<div class="schedule-container"><table class="schedule-table">';
+  html += '<thead><tr><th style="min-width:160px;">时间</th>'+days.map(d=>`<th>${d}</th>`).join('')+'</tr></thead><tbody>';
+
+  // 早餐行
+  html += '<tr><td class="time-col">🍽️ 早餐 7:30-8:20</td>'+days.map(()=>'<td class="meal-row">早餐时间</td>').join('')+'</tr>';
+
+  periodLabels.forEach((label,p) => {
+    html += `<tr><td class="time-col">${label}</td>`;
+    days.forEach((d,di) => {
+      const sc = mockData.schedule.find(s=>s.className===cname && s.day===di && s.period===p);
+      if(sc) html += `<td><div class="class-cell">${sc.subject}<div class="teacher-name">${sc.teacher}</div></div></td>`;
+      else html += `<td class="empty-cell">—</td>`;
+    });
+    html += '</tr>';
+    // 插入休息时间
+    if(p===2) html += '<tr><td class="time-col">🍽️ 午餐+午休</td>'+days.map(()=>'<td class="meal-row">午餐+午休</td>').join('')+'</tr>';
+    if(p===6) html += '<tr><td class="time-col">🍽️ 晚餐+休息</td>'+days.map(()=>'<td class="meal-row">晚餐+休息</td>').join('')+'</tr>';
+  });
+
+  html += '</tbody></table></div>';
+  document.getElementById('scheduleTableContainer').innerHTML = html;
+}
+
+function openScheduleModal(){
+  showModal(`
+    <div class="modal-header"><h3>添加排课</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form onsubmit="saveSchedule(event)">
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">班级<span class="required">*</span></label><select class="form-select" name="className">${mockData.classes.map(c=>`<option>${c.name}</option>`).join('')}</select></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">星期<span class="required">*</span></label><select class="form-select" name="day">${days.map((d,i)=>`<option value="${i}">${d}</option>`).join('')}</select></div>
+      <div class="form-group"><label class="form-label">时间<span class="required">*</span></label><select class="form-select" name="period">${periodLabels.map((l,i)=>`<option value="${i}">${l}</option>`).join('')}</select></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">课程名称<span class="required">*</span></label><input class="form-input" name="subject" value="职测刷题" required></div>
+      <div class="form-group"><label class="form-label">授课教师<span class="required">*</span></label><select class="form-select" name="teacher">${mockData.teacherSalary.map(t=>`<option>${t.name}</option>`).join('')}</select></div></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">确认排课</button></div>
+    </form>`);
+}
+
+function saveSchedule(e){
+  e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries()); data.day=+data.day; data.period=+data.period;
+  // conflict check
+  const exists = mockData.schedule.find(s=>s.className===data.className && s.day===data.day && s.period===data.period);
+  if(exists){ toast('该时段已有课程，存在冲突！','error'); return; }
+  data.id='SC'+String(mockData.schedule.length+1).padStart(3,'0');
+  mockData.schedule.push(data); toast('排课成功！课时已同步到教师薪酬','success');
+  closeModal(); refreshCurrentPage();
+}
+
+function removeSchedule(sid){
+  if(confirm('确定删除该排课？')){ mockData.schedule=mockData.schedule.filter(s=>s.id!==sid); toast('排课已删除','success'); refreshCurrentPage(); }
+}
+
+function exportSchedule(){
+  const cname = document.getElementById('scheduleClassSelect')?.value||'冲刺一班';
+  const clsData = mockData.classes.find(c=>c.name===cname);
+  const headTeacher = clsData?.headTeacher||'';
+  const room = clsData?.room||'';
+  // 课程颜色映射，增强辨识度
+  const subjectColors = {
+    '职测刷题':'#e3f2fd','语文':'#fff3e0','数学':'#e8f5e9','英语':'#fce4ec',
+    '电子电工':'#f3e5f5','科学常识':'#e0f7fa','人文常识':'#fff8e1','时政':'#e8eaf6',
+    '德育':'#f1f8e9','体育':'#fffde7','逻辑推理':'#e0f2f1','大扫除':'#efebe9'
+  };
+  function getSubjectColor(subj){
+    for(const key in subjectColors){ if(subj.includes(key)) return subjectColors[key]; }
+    return '#f5f5f5';
+  }
+  let html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>${cname}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+<style>
+  body{font-family:"Microsoft YaHei","SimHei",sans-serif;background:#fff;margin:0;padding:20px;}
+  .title{text-align:center;font-size:22px;font-weight:700;padding:12px 0 4px;color:#1a3a5c;letter-spacing:2px;}
+  .info{text-align:center;font-size:13px;color:#555;padding-bottom:12px;border-bottom:2px solid #1a3a5c;margin-bottom:16px;}
+  table{width:100%;border-collapse:collapse;table-layout:fixed;}
+  th,td{border:1px solid #b0b0b0;padding:10px 8px;font-size:13px;text-align:center;vertical-align:middle;line-height:1.5;}
+  th{background:#1a3a5c;color:#fff;font-weight:600;font-size:14px;padding:12px 8px;}
+  .time-col{background:#e8eef5;font-weight:700;text-align:left;min-width:160px;color:#1a3a5c;font-size:13px;}
+  .meal-row{background:#fff8e1;color:#b8860b;font-weight:600;font-size:12px;}
+  .subject-cell{font-weight:600;color:#1a3a5c;font-size:14px;}
+  .teacher-name{font-size:12px;color:#666;font-weight:400;margin-top:2px;display:block;}
+  .empty-cell{color:#ccc;font-size:14px;}
+  .footer{text-align:right;font-size:12px;color:#888;padding-top:14px;margin-top:8px;border-top:1px solid #e0e0e0;}
+  .legend{margin-top:10px;font-size:12px;color:#666;display:flex;flex-wrap:wrap;gap:8px;}
+  .legend-item{display:inline-flex;align-items:center;gap:4px;}
+  .legend-box{display:inline-block;width:14px;height:14px;border-radius:3px;border:1px solid #ccc;}
+</style></head><body>
+  <div class="title">${cname} 课程表</div>
+  <div class="info">班主任：${headTeacher} &nbsp;|&nbsp; 教室：${room} &nbsp;|&nbsp; 导出日期：${fmtDate(now)} &nbsp;|&nbsp; 楚怡教育</div>
+  <table>
+    <thead><tr><th class="time-col">时间</th>${days.map(d=>`<th>${d}</th>`).join('')}</tr></thead>
+    <tbody>
+      <tr><td class="time-col">早餐 7:30-8:20</td>${days.map(()=>'<td class="meal-row">早餐时间</td>').join('')}</tr>`;
+  periodLabels.forEach((label,p) => {
+    html += `<tr><td class="time-col">${label}</td>`;
+    days.forEach((d,di) => {
+      const sc = mockData.schedule.find(s=>s.className===cname && s.day===di && s.period===p);
+      if(sc){
+        const bgColor = getSubjectColor(sc.subject);
+        html += `<td class="subject-cell" style="background:${bgColor};"><b>${sc.subject}</b><span class="teacher-name">${sc.teacher}</span></td>`;
+      } else {
+        html += '<td class="empty-cell">—</td>';
+      }
+    });
+    html += '</tr>';
+    if(p===2) html += `<tr><td class="time-col">午餐+午休 11:25-14:00</td>${days.map(()=>'<td class="meal-row">午餐+午休</td>').join('')}</tr>`;
+    if(p===6) html += `<tr><td class="time-col">晚餐+休息 17:30-18:30</td>${days.map(()=>'<td class="meal-row">晚餐+休息</td>').join('')}</tr>`;
+  });
+  // 图例
+  const usedSubjects = [...new Set(mockData.schedule.filter(s=>s.className===cname).map(s=>s.subject))];
+  let legendHtml = '<div class="legend"><b>图例：</b>';
+  usedSubjects.forEach(subj=>{ legendHtml += `<span class="legend-item"><span class="legend-box" style="background:${getSubjectColor(subj)};"></span>${subj}</span>`; });
+  legendHtml += '</div>';
+  html += '</tbody></table>'+legendHtml+'<div class="footer">楚怡教育 | 导出日期：'+fmtDate(now)+'</div></body></html>';
+  const blob = new Blob(['\ufeff'+html],{type:'application/vnd.ms-excel;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=cname+'_课表_'+fmtDate(now)+'.xls';a.click();
+  toast(cname+' 课表已导出为Excel格式','success');
+}
+
+function viewTeacherSchedule(tname){
+  const items = mockData.schedule.filter(s=>s.teacher===tname);
+  showModal(`
+    <div class="modal-header"><h3>👨‍🏫 ${tname} 的排课情况</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      <div class="table-container">
+        <table><thead><tr><th>班级</th><th>星期</th><th>时间</th><th>课程</th></tr></thead>
+        <tbody>${items.map(s=>`<tr><td>${s.className}</td><td>${days[s.day]}</td><td>${periodLabels[s.period]}</td><td>${s.subject}</td></tr>`).join('')}</tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">关闭</button></div>`);
+}
+
+// ==================== TEACHER CRUD ====================
+function openTeacherModal(tid) {
+  const t = tid ? mockData.teacherSalary.find(x=>x.id===tid) : null;
+  const data = t||{name:'',subject:'',ratePerClass:100};
+  showModal(`
+    <div class="modal-header"><h3>${tid?'编辑教师':'新增教师'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form onsubmit="saveTeacher(event${tid?`,'${tid}'`:''})">
+    <div class="modal-body">
+      <div class="form-group"><label class="form-label">教师姓名<span class="required">*</span></label><input class="form-input" name="name" value="${data.name}" required></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">任教科目</label><input class="form-input" name="subject" value="${data.subject}"></div>
+      <div class="form-group"><label class="form-label">课时单价（元/节）</label><input class="form-input" type="number" name="ratePerClass" value="${data.ratePerClass}" min="0" step="10"></div></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>`);
+}
+
+function saveTeacher(e,tid){
+  e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries()); data.ratePerClass=+data.ratePerClass||0;
+  if(tid){ const t=mockData.teacherSalary.find(x=>x.id===tid); if(t){Object.assign(t,data);toast('教师信息已更新','success');} }
+  else{ data.id='T'+String(mockData.teacherSalary.length+1).padStart(3,'0'); mockData.teacherSalary.push(data); toast('教师添加成功','success'); }
+  closeModal(); refreshCurrentPage();
+}
+
+function deleteTeacher(tid){
+  const t = mockData.teacherSalary.find(x=>x.id===tid);
+  if(!t) return;
+  if(confirm(`确定要删除教师"${t.name}"吗？此操作不可撤销。`)){
+    mockData.teacherSalary = mockData.teacherSalary.filter(x=>x.id!==tid);
+    toast(`教师"${t.name}"已删除`,'success'); refreshCurrentPage();
+  }
+}
+
+// ==================== TEACHER SALARY ====================
+function updateRate(tname, val){
+  const t = mockData.teacherSalary.find(x=>x.name===tname);
+  if(t){ t.ratePerClass = +val||0; toast(`${tname} 课时单价已更新为 ¥${t.ratePerClass}`,'success'); refreshCurrentPage(); }
+}
+
+// ==================== ENROLLMENT CRUD ====================
+function openEnrollmentModal(eid) {
+  const t = eid ? mockData.enrollmentTeachers.find(x=>x.id===eid) : null;
+  const d = t||{name:'',phone:'',region:'',targetSchools:'',note:''};
+  showModal(`
+    <div class="modal-header"><h3>${eid?'编辑招生老师':'新增招生老师'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form onsubmit="saveEnrollment(event${eid?`,'${eid}'`:''})">
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">姓名<span class="required">*</span></label><input class="form-input" name="name" value="${d.name}" required></div>
+      <div class="form-group"><label class="form-label">手机号</label><input class="form-input" name="phone" value="${d.phone||''}"></div></div>
+      <div class="form-group"><label class="form-label">负责片区</label><input class="form-input" name="region" value="${d.region||''}" placeholder="如：郑州片区"></div>
+      <div class="form-group"><label class="form-label">目标院校</label><input class="form-input" name="targetSchools" value="${d.targetSchools&&typeof d.targetSchools==='string'?d.targetSchools:d.targetSchools?d.targetSchools.join('、'):''}" placeholder="多个院校用、分隔"></div>
+      <div class="form-group"><label class="form-label">备注</label><input class="form-input" name="note" value="${d.note||''}"></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>`);
+}
+function saveEnrollment(e,eid){
+  e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries());
+  data.studentCount = data.studentCount ? +data.studentCount : 0;
+  data.targetSchools = data.targetSchools ? data.targetSchools.split(/[、,]/).map(s=>s.trim()).filter(Boolean) : [];
+  if(eid){ const t=mockData.enrollmentTeachers.find(x=>x.id===eid); if(t){Object.assign(t,data);toast('招生老师信息已更新','success');} }
+  else{ data.id='E'+String(mockData.enrollmentTeachers.length+1).padStart(3,'0'); data.studentCount=0; mockData.enrollmentTeachers.push(data); toast('招生老师添加成功','success'); }
+  closeModal(); refreshCurrentPage();
+}
+function deleteEnrollment(eid){
+  const t = mockData.enrollmentTeachers.find(x=>x.id===eid);
+  if(!t) return;
+  if(confirm(`确定删除招生老师"${t.name}"吗？`)){
+    mockData.enrollmentTeachers = mockData.enrollmentTeachers.filter(x=>x.id!==eid);
+    toast(`"${t.name}"已删除`,'success'); refreshCurrentPage();
+  }
+}
+
+function viewEnrollmentStudents(tname){
+  const students = mockData.students.filter(s=>s.teacher===tname);
+  const totalShould = students.reduce((s,st)=>s+(st.shouldPay||0),0);
+  const totalPaid = students.reduce((s,st)=>s+(st.paidFee||0),0);
+  const totalComm = students.reduce((s,st)=>s+(st.commission||0),0);
+  showModal(`
+    <div class="modal-header"><h3>👨‍🎓 ${tname} 招收学生列表（共${students.length}人）</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      ${students.length===0?'<div class="empty-state"><p>暂无招收学生记录</p></div>':`
+      <div style="margin-bottom:12px;font-size:12px;color:#888;">💡 应缴/实缴/提成可直接修改，点击"保存费用"生效</div>
+      <div class="table-container"><table>
+        <thead><tr><th>编号</th><th>姓名</th><th>性别</th><th>类型</th><th>班级</th><th>生源地</th><th>状态</th><th>应缴费用</th><th>实缴费用</th><th>招生提成</th></tr></thead>
+        <tbody>${students.map(s=>{
+          return `<tr>
+            <td>${s.id}</td><td><b>${s.name}</b></td><td>${s.gender}</td>
+            <td><span class="tag ${s.gradStatus==='应届'?'tag-blue':s.gradStatus==='往届'?'tag-orange':'tag-green'}">${s.gradStatus}</span></td>
+            <td>${s.class}</td><td>${s.native}</td>
+            <td><span class="tag ${s.status==='在读'?'tag-green':'tag-gray'}">${s.status}</span></td>
+            <td><input type="number" class="fee-input" data-sid="${s.id}" data-field="shouldPay" value="${s.shouldPay||0}" style="width:80px;padding:4px 6px;border:1px solid #ddd;border-radius:4px;font-size:12px;"></td>
+            <td><input type="number" class="fee-input" data-sid="${s.id}" data-field="paidFee" value="${s.paidFee||0}" style="width:80px;padding:4px 6px;border:1px solid #ddd;border-radius:4px;font-size:12px;"></td>
+            <td><input type="number" class="fee-input" data-sid="${s.id}" data-field="commission" value="${s.commission||0}" style="width:70px;padding:4px 6px;border:1px solid #ddd;border-radius:4px;font-size:12px;"></td></tr>`;
+        }).join('')}</tbody>
+        <tfoot><tr style="background:#fafbfc;font-weight:700;">
+          <td colspan="7" style="text-align:right;">合计：</td>
+          <td style="color:#1a3a5c;">¥${totalShould.toLocaleString()}</td>
+          <td style="color:#27ae60;">¥${totalPaid.toLocaleString()}</td>
+          <td style="color:#ff7b42;">¥${totalComm.toLocaleString()}</td>
+        </tr></tfoot>
+      </table></div>
+      <div style="margin-top:12px;padding:12px;background:#fafbfc;border-radius:8px;font-size:13px;display:flex;gap:24px;flex-wrap:wrap;">
+        <span>共招收 <b>${students.length}</b> 名学生</span>
+        <span>应缴总额 <b style="color:#1a3a5c;">¥${totalShould.toLocaleString()}</b></span>
+        <span>实缴总额 <b style="color:#27ae60;">¥${totalPaid.toLocaleString()}</b></span>
+        <span>未缴余额 <b style="color:${totalShould-totalPaid>0?'#ff4757':'#27ae60'};">¥${(totalShould-totalPaid).toLocaleString()}</b></span>
+        <span>招生提成 <b style="color:#ff7b42;">¥${totalComm.toLocaleString()}</b></span>
+      </div>`}
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">关闭</button>${students.length>0?'<button class="btn btn-primary" onclick="saveEnrollmentFees()">💾 保存费用</button>':''}</div>`);
+}
+function saveEnrollmentFees(){
+  document.querySelectorAll('.fee-input').forEach(inp=>{
+    const sid = inp.dataset.sid;
+    const field = inp.dataset.field;
+    const val = +inp.value||0;
+    const stu = mockData.students.find(s=>s.id===sid);
+    if(stu) stu[field] = val;
+  });
+  toast('费用信息已保存','success');
+  closeModal();
+}
+
+// ==================== DORMITORY CRUD ====================
+function openDormModal(type,did) {
+  const d = did ? mockData.dormitories.find(x=>x.id===did) : null;
+  const data = d||{building:'',room:'',beds:6,type:type||'男生宿舍'};
+  showModal(`
+    <div class="modal-header"><h3>${did?'编辑宿舍':'新增宿舍'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form onsubmit="saveDormitory(event${did?`,'${did}'`:''})">
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">楼栋<span class="required">*</span></label><input class="form-input" name="building" value="${data.building}" required placeholder="如：1号楼"></div>
+      <div class="form-group"><label class="form-label">房号<span class="required">*</span></label><input class="form-input" name="room" value="${data.room}" required placeholder="如：101"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">类型</label><select class="form-select" name="type"><option ${data.type==='男生宿舍'?'selected':''}>男生宿舍</option><option ${data.type==='女生宿舍'?'selected':''}>女生宿舍</option></select></div>
+      <div class="form-group"><label class="form-label">床位数</label><input class="form-input" type="number" name="beds" value="${data.beds}" min="1" max="12"></div></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>`);
+}
+function saveDormitory(e,did){
+  e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries()); data.beds=+data.beds;
+  if(did){ const d=mockData.dormitories.find(x=>x.id===did); if(d){ d.building=data.building; d.room=data.room; d.type=data.type; d.beds=data.beds; toast('宿舍信息已更新','success'); } }
+  else{ data.id='D'+String(mockData.dormitories.length+1).padStart(3,'0'); data.students=[]; mockData.dormitories.push(data); toast('宿舍添加成功','success'); }
+  closeModal(); refreshCurrentPage();
+}
+function removeDormStudent(did,sid){
+  const d = mockData.dormitories.find(x=>x.id===did);
+  const s = d?.students.find(x=>x.studentId===sid);
+  if(!d||!s) return;
+  if(s.isTrial){ toast('试读学生宿舍由营销管理模块维护，不可在此移出','error'); return; }
+  if(confirm(`确定将"${s.name}"从 ${d.building} ${d.room} 移出吗？`)){
+    removeStudentFromAllDorms(sid);
+    toast(`"${s.name}"已移出宿舍`,'success'); refreshCurrentPage();
+  }
+}
+function openDormCheckin(did){
+  const d = mockData.dormitories.find(x=>x.id===did);
+  if(!d) return;
+  if(d.students.length>=d.beds){ toast('该宿舍已满员','error'); return; }
+  // 找出未分配宿舍且性别匹配的学生
+  const isMale = d.type==='男生宿舍';
+  const available = mockData.students.filter(s=>{
+    if(s.status==='休学') return false;
+    if(isMale && s.gender!=='男') return false;
+    if(!isMale && s.gender!=='女') return false;
+    return !getStudentDormId(s.id);
+  });
+  showModal(`
+    <div class="modal-header"><h3>➕ 学生入住 - ${d.building} ${d.room}（${d.type}，余${d.beds-d.students.length}床位）</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      ${available.length===0?`<div class="empty-state"><p>暂无可入住的${isMale?'男':'女'}生（所有学生已分配宿舍或休学）</p></div>`:`
+      <div class="table-container"><table>
+        <thead><tr><th>编号</th><th>姓名</th><th>班级</th><th>类型</th><th>操作</th></tr></thead>
+        <tbody>${available.map(s=>`<tr><td>${s.id}</td><td><b>${s.name}</b></td><td>${s.class}</td><td><span class="tag ${s.gradStatus==='应届'?'tag-blue':s.gradStatus==='往届'?'tag-orange':'tag-green'}">${s.gradStatus}</span></td><td><button class="btn btn-primary btn-sm" onclick="doCheckin('${did}','${s.id}')">入住</button></td></tr>`).join('')}</tbody>
+      </table></div>`}
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">关闭</button></div>`);
+}
+function doCheckin(did,sid){
+  const d = mockData.dormitories.find(x=>x.id===did);
+  if(!d) return;
+  if(d.students.length>=d.beds){ toast('该宿舍已满员','error'); return; }
+  assignStudentToDorm(sid,did);
+  const stu = mockData.students.find(s=>s.id===sid);
+  toast(`"${stu?.name}"已入住 ${d.building} ${d.room}`,'success');
+  // 刷新入住弹窗
+  openDormCheckin(did);
+}
+function openDormTransfer(did){
+  const d = mockData.dormitories.find(x=>x.id===did);
+  if(!d) return;
+  const otherRooms = mockData.dormitories.filter(x=>x.id!==did && x.type===d.type);
+  const transferableStudents = d.students.filter(s=>!s.isTrial);
+  showModal(`
+    <div class="modal-header"><h3>🔄 调换宿舍 - ${d.building} ${d.room}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <div class="modal-body">
+      ${d.students.some(s=>s.isTrial)?'<div class="alert alert-info" style="margin-bottom:12px;"><span>ℹ️</span> 试读学生宿舍由营销管理模块维护，不参与调换。</div>':''}
+      <div style="margin-bottom:16px;"><b>可调换学生：</b></div>
+      <div class="table-container"><table><thead><tr><th>学生</th><th>班级</th><th>调换到</th></tr></thead>
+      <tbody>${transferableStudents.map(s=>`<tr><td>${s.name}</td><td>${s.class}</td><td><select id="dst_${s.studentId}" style="padding:4px 8px;border:1px solid #ddd;border-radius:6px;"><option value="">-- 选择目标房间 --</option>${otherRooms.map(r=>`<option value="${r.id}">${r.building} ${r.room}（${r.students.length}/${r.beds}人）</option>`).join('')}</select></td></tr>`).join('')}${transferableStudents.length===0?'<tr><td colspan="3" style="text-align:center;color:#999;">无可调换的正式学生</td></tr>':''}</tbody></table></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="doTransfer('${did}')">确认调换</button></div>`);
+}
+function doTransfer(fromDid){
+  const fromRoom = mockData.dormitories.find(x=>x.id===fromDid);
+  if(!fromRoom) return;
+  let moved = 0;
+  fromRoom.students.forEach(s=>{
+    const sel = document.getElementById('dst_'+s.studentId);
+    if(sel && sel.value){
+      const toRoom = mockData.dormitories.find(x=>x.id===sel.value);
+      if(toRoom){
+        toRoom.students.push({...s});
+        moved++;
+      }
+    }
+  });
+  if(moved>0){
+    fromRoom.students = fromRoom.students.filter(s=>{
+      const sel = document.getElementById('dst_'+s.studentId);
+      return !sel || !sel.value;
+    });
+  }
+  toast(`已调换 ${moved} 名学生`,'success');
+  closeModal(); refreshCurrentPage();
+}
+
+// ==================== MARKETING CRUD ====================
+function openMarketingModal(mid) {
+  const m = mid ? mockData.marketing.find(x=>x.id===mid) : null;
+  const d = m||{name:'',gender:'男',phone:'',native:'',gradStatus:'应届',targetSchool:'',targetMajor:'',teacher:'李老师',trialStart:fmtDate(now),trialDays:3,batch:'一期',note:''};
+  showModal(`
+    <div class="modal-header"><h3>${mid?'编辑试听学生':'登记试听学生'}</h3><button class="modal-close" onclick="closeModal()">✕</button></div>
+    <form onsubmit="saveMarketing(event${mid?`,'${mid}'`:''})">
+    <div class="modal-body">
+      <div class="form-row"><div class="form-group"><label class="form-label">姓名<span class="required">*</span></label><input class="form-input" name="name" value="${d.name}" required></div>
+      <div class="form-group"><label class="form-label">性别</label><select class="form-select" name="gender"><option ${d.gender==='男'?'selected':''}>男</option><option ${d.gender==='女'?'selected':''}>女</option></select></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">手机号</label><input class="form-input" name="phone" value="${d.phone||''}"></div>
+      <div class="form-group"><label class="form-label">生源地</label><input class="form-input" name="native" value="${d.native||''}"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">学生类型</label><select class="form-select" name="gradStatus"><option ${d.gradStatus==='应届'?'selected':''}>应届</option><option ${d.gradStatus==='往届'?'selected':''}>往届</option><option ${d.gradStatus==='中职'?'selected':''}>中职</option></select></div>
+      <div class="form-group"><label class="form-label">试听批次<span class="required">*</span></label><input class="form-input" name="batch" value="${d.batch||''}" placeholder="如：一期、二期、暑期班" required></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">目标院校</label><input class="form-input" name="targetSchool" value="${d.targetSchool||''}"></div>
+      <div class="form-group"><label class="form-label">目标专业</label><input class="form-input" name="targetMajor" value="${d.targetMajor||''}"></div></div>
+      <div class="form-group"><label class="form-label">招生老师<span class="required">*</span></label><select class="form-select" name="teacher" required><option ${d.teacher==='李老师'?'selected':''}>李老师</option><option ${d.teacher==='王老师'?'selected':''}>王老师</option><option ${d.teacher==='张老师'?'selected':''}>张老师</option></select></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">试听开始日期<span class="required">*</span></label><input class="form-input" type="date" name="trialStart" value="${d.trialStart}" required></div>
+      <div class="form-group"><label class="form-label">体验天数</label><input class="form-input" type="number" name="trialDays" value="${d.trialDays}" min="1" max="30"></div></div>
+      <div class="form-row"><div class="form-group"><label class="form-label">宿舍安排</label>
+        <div style="display:flex;gap:8px;"><input class="form-input" name="dormBuilding" placeholder="楼栋" value="${d.dormitory?.building||''}" style="flex:1;"><input class="form-input" name="dormRoom" placeholder="房号" value="${d.dormitory?.room||''}" style="flex:1;"><input class="form-input" name="dormBed" placeholder="床位" value="${d.dormitory?.bed||''}" style="flex:1;"></div>
+      </div>
+      <div class="form-group"><label class="form-label">备注</label><textarea class="form-input" name="note" rows="2" style="resize:vertical;">${d.note||''}</textarea></div></div>
+    </div>
+    <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button><button type="submit" class="btn btn-primary">保存</button></div>
+    </form>`);
+}
+
+function saveMarketing(e,mid){
+  e.preventDefault(); const fd=new FormData(e.target); const data=Object.fromEntries(fd.entries());
+  data.trialDays = +data.trialDays||3;
+  if(data.dormBuilding||data.dormRoom||data.dormBed){
+    data.dormitory = {building:data.dormBuilding||'',room:data.dormRoom||'',bed:data.dormBed||''};
+  } else { data.dormitory = null; }
+  delete data.dormBuilding; delete data.dormRoom; delete data.dormBed;
+  if(mid){
+    const m = mockData.marketing.find(x=>x.id===mid);
+    if(m){ data.status=m.status; Object.assign(m,data); toast('试听学生信息已更新','success'); }
+  } else {
+    data.id = 'M'+String(mockData.marketing.length+1).padStart(3,'0');
+    data.status = '试听中';
+    mockData.marketing.push(data);
+    toast('试听学生登记成功','success');
+  }
+  syncMarketingDorms();
+  closeModal(); refreshCurrentPage();
+}
+
+function convertLead(mid){
+  const m = mockData.marketing.find(x=>x.id===mid);
+  if(!m) return;
+  if(confirm(`确认将"${m.name}"转化为正式学生？\n\n试听信息：\n- 招生老师：${m.teacher}\n- 目标院校：${m.targetSchool}\n- 试听天数：${m.trialDays}天\n\n转化为正式学生后，系统将自动在学生管理中创建档案。`)){
+    // 自动创建学生档案
+    const newStudent = {
+      id:'S'+String(mockData.students.length+1).padStart(3,'0'),
+      name:m.name, gender:m.gender, phone:m.phone, native:m.native,
+      gradStatus:m.gradStatus, targetSchool:m.targetSchool, targetMajor:m.targetMajor,
+      teacher:m.teacher, class:m.gradStatus==='应届'?'冲刺一班':'基础班',
+      enrollDate:fmtDate(now), status:'在读',
+      shouldPay:0, paidFee:0, commission:0
+    };
+    if(m.gradStatus==='应届') newStudent.examScores = {chinese:80,math:80,english:80};
+    mockData.students.push(newStudent);
+    m.status = '已转化';
+    m.convertedDate = fmtDate(now);
+    syncMarketingDorms();
+    toast(`"${m.name}"已成功转化为正式学生！学号：${newStudent.id}`,'success');
+    refreshCurrentPage();
+  }
+}
+
+function loseLead(mid){
+  const m = mockData.marketing.find(x=>x.id===mid);
+  if(!m) return;
+  const reason = prompt(`请输入"${m.name}"流失原因：`,'');
+  if(reason===null) return; // user cancelled
+  m.status = '已流失';
+  m.lossReason = reason||'未说明';
+  syncMarketingDorms();
+  toast(`"${m.name}"已标记为流失`,'success');
+  refreshCurrentPage();
+}
+
+function deleteMarketing(mid){
+  if(confirm('确定删除该试听记录吗？此操作不可撤销。')){
+    mockData.marketing = mockData.marketing.filter(x=>x.id!==mid);
+    syncMarketingDorms();
+    toast('试听记录已删除','success'); refreshCurrentPage();
+  }
+}
+
+// ==================== IMPORT / EXPORT ====================
+function toggleExportMenu(){ document.getElementById('exportMenu').classList.toggle('hidden'); }
+document.addEventListener('click',function(e){ if(!e.target.closest('.dropdown-wrap')) document.getElementById('exportMenu')?.classList.add('hidden'); });
+
+function downloadTemplate() {
+  const csv = '姓名,性别,手机号,身份证号,生源地,学生类型,目标院校,目标专业,招生老师,班级,语文学考(分),数学学考(分),英语学考(分)\n示例学生,男,13800000000,410100200001010000,河南省郑州市,应届,郑州职业技术学院,计算机应用,李老师,冲刺一班,85,80,75';
+  const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='学生导入模板.csv';a.click();
+  toast('模板已下载','success');
+}
+
+function exportStudents(mode) {
+  document.getElementById('exportMenu').classList.add('hidden');
+  let data = mockData.students;
+  if(mode==='current'){
+    const q = (document.getElementById('studentSearch')?.value||'').toLowerCase();
+    data = data.filter(s=>!q||s.name.includes(q)||s.id.includes(q)||s.class.includes(q)||s.teacher.includes(q));
+  } else if(mode==='class'){
+    const cls = prompt('请输入要导出的班级名称：','冲刺一班'); if(!cls) return;
+    data = data.filter(s=>s.class===cls);
+  }
+  let csv='\uFEFF编号,姓名,性别,手机号,生源地,学生类型,目标院校,目标专业,招生老师,班级,语文学考,数学学考,英语学考,入学日期,状态\n';
+  data.forEach(s=>{csv+=`${s.id},${s.name},${s.gender},${s.phone},${s.native},${s.gradStatus},${s.targetSchool},${s.targetMajor},${s.teacher},${s.class},${s.examScores?.chinese||''},${s.examScores?.math||''},${s.examScores?.english||''},${s.enrollDate},${s.status}\n`; });
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`学生数据_${mode}_${fmtDate(now)}.csv`;a.click();
+  toast(`已导出 ${data.length} 条学生数据`,'success');
+}
+
+function handleImport(e,type){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    const lines=ev.target.result.split('\n').filter(l=>l.trim());
+    if(lines.length<2){toast('文件内容为空或格式不正确','error');return;}
+    if(type==='student'){
+      lines.slice(1).forEach((line)=>{
+        const cols=line.split(',');
+        if(cols.length>=6){
+          const student = {
+            id:'S'+String(mockData.students.length+1).padStart(3,'0'),name:cols[0].trim(),gender:cols[1].trim(),phone:cols[2].trim(),
+            idCard:cols[3]?.trim()||'',native:cols[4]?.trim()||'',gradStatus:cols[5]?.trim()||'应届',
+            targetSchool:cols[6]?.trim()||'',targetMajor:cols[7]?.trim()||'',teacher:cols[8]?.trim()||'李老师',
+            class:cols[9]?.trim()||'冲刺一班',enrollDate:fmtDate(now),status:'在读'
+          };
+          if(student.gradStatus==='应届' && cols[10]){
+            student.examScores = {chinese:+(cols[10]?.trim())||0, math:+(cols[11]?.trim())||0, english:+(cols[12]?.trim())||0};
+          }
+          mockData.students.push(student);
+        }
+      });
+      toast(`成功导入 ${lines.length-1} 条学生数据`,'success');
+    }
+    refreshCurrentPage();
+  };
+  reader.readAsText(file);
+}
+
+function exportData(type){
+  let csv='',filename='';
+  if(type==='score'){
+    csv='\uFEFF学生,类型,班级,周次,语文,数学,英语,职测,总分\n';
+    mockData.scores.forEach(s=>{const stu=mockData.students.find(x=>x.id===s.studentId);const yj=stu?.gradStatus==='应届';csv+=`${s.name},${stu?.gradStatus||''},${s.class},第${s.week}周,${yj?(stu.examScores?.chinese||''):(s.chinese||'')},${yj?(stu.examScores?.math||''):(s.math||'')},${yj?(stu.examScores?.english||''):(s.english||'')},${s.professional},${totalScore(s)}\n`; });
+    filename='成绩数据导出.csv';
+  } else if(type==='salary'){
+    csv='\uFEFF教师,科目,排课数(周),课时单价,月薪合计\n';
+    mockData.teacherSalary.forEach(t=>{const cnt=getTeacherScheduleCount(t.name);csv+=`${t.name},${t.subject},${cnt},${t.ratePerClass},${cnt*t.ratePerClass*4}\n`; });
+    filename='教师薪酬报表.csv';
+  }
+  const blob=new Blob([csv],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();
+  toast(`${filename} 已导出`,'success');
+}
+
+// ==================== MODALS ====================
+function showModal(html){modalBox.innerHTML=html;overlay.classList.remove('hidden');}
+function closeModal(){overlay.classList.add('hidden');editingStudent=null;}
+overlay.addEventListener('click',function(e){if(e.target===overlay)closeModal();});
+
+// ==================== UTILS ====================
+function toast(msg,type=''){const t=document.createElement('div');t.className='toast '+type;t.textContent=msg;document.body.appendChild(t);setTimeout(()=>t.remove(),2500);}
+
+// ==================== INIT ====================
+syncMarketingDorms();
+document.getElementById('navList').addEventListener('click',function(e){
+  const item=e.target.closest('.nav-item');if(!item)return;
+  navigateTo(item.dataset.page);
+});
+
+navigateTo('dashboard');
+document.getElementById('notifBadge').textContent = mockData.fees.filter(f=>f.status==='逾期').length + mockData.charges.filter(c=>c.status==='待缴').length;
+
+// 初始化实时同步
+initSync();
+
+// 更新日期显示
+(function(){
+  var days = ['日','一','二','三','四','五','六'];
+  var d = new Date();
+  var el = document.getElementById('dateDisplay');
+  if(el) el.textContent = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日 周'+days[d.getDay()];
+})();
+</script>
+</body>
+</html>
